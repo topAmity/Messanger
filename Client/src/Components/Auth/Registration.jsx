@@ -7,6 +7,10 @@ import { Link, Navigate } from "react-router-dom";
 import CircularProgress from "@mui/material/CircularProgress";
 import { useDispatch, useSelector } from "react-redux";
 import { authRegister, uploadPic } from "../Redux/Auth/action";
+import { useNavigate } from "react-router-dom";
+import AmityClient, { ConnectionStatus, ApiEndpoint } from "@amityco/js-sdk";
+import axios from "axios";
+
 export const RegisterComp = () => {
   const { user, loading, error } = useSelector((store) => store.user);
   const [regData, setRegData] = useState({
@@ -16,10 +20,39 @@ export const RegisterComp = () => {
     email: "",
     password: "",
   });
+  const [amityUser, setAmityUser] = useState({
+    displayName: "",
+    userId: "",
+  });
+  const [onConnected, setOnConnected] = useState(false);
+  const navigate = useNavigate();
   const dispatch = useDispatch();
+  const apiKey = "b3babb0b3a89f4341d31dc1a01091edcd70f8de7b23d697f";
+  function login() {
+    const client = new AmityClient({
+      apiKey: apiKey,
+      apiEndpoint: ApiEndpoint.SG,
+    }); // modify your server region here e.g ApiEndpoint.EU
+    client.registerSession({
+      userId: amityUser.userId,
+      displayName: amityUser.displayName,
+    }); // Add your own userId and displayName
+    client.on("connectionStatusChanged", ({ newValue }) => {
+      console.log("newValue: ", newValue);
+      if (newValue === ConnectionStatus.Connected) {
+        console.log("connected to asc");
+        setOnConnected(true);
+      } else {
+        console.log(" not connected to asc");
+      }
+    });
+    console.log("client: ", client);
+  }
+
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setRegData({ ...regData, [name]: value });
+    // setRegData({ ...regData, [name]: value });
+    setAmityUser({ ...amityUser, [name]: value });
   };
   const handleInputFile = (e) => {
     const file = e.target.files[0];
@@ -32,13 +65,39 @@ export const RegisterComp = () => {
     reader.readAsDataURL(file);
   };
   const handleSubmit = () => {
-    const url = "https://messenger-clo.herokuapp.com/auth";
-    if (user.pic) regData["pic"] = user.pic;
-    dispatch(authRegister(url, regData));
+    // const url = "";
+    login();
+    registerUser();
+    // if (onConnected) {
+    //   return <Navigate to={"/"} />;
+    // }
   };
-  if (user._id) {
-    return <Navigate to={"/"} />;
+  function registerUser() {
+    axios
+      .post("/user", {
+        userId: "Fred",
+        displayName: "Flintstone",
+        email: "",
+      })
+      .then(function (response) {
+        console.log(response);
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
   }
+  useEffect(() => {
+    if (onConnected) {
+      navigate("/");
+    }
+  }, [onConnected]);
+
+  //   if (user.pic) regData["pic"] = user.pic;
+  // dispatch(authRegister(url, regData));
+  // };
+  // if (user._id) {
+  //   return <Navigate to={"/"} />;
+  // }
   return (
     <div className="auth-cont">
       <div>
@@ -53,13 +112,14 @@ export const RegisterComp = () => {
           <p className="profile-text">Choose Profile</p>
         </div>
         <div className="details-cont">
-          <p>Name</p>
+          <p>Display name</p>
           <input onChange={handleChange} name="name" className="inputcom" />
 
+          <p>User ID</p>
+          <input onChange={handleChange} name="userId" className="inputcom" />
           <p>Email</p>
           <input onChange={handleChange} name="email" className="inputcom" />
-
-          <p>Password</p>
+          {/* <p>Password</p>
           <input
             onChange={handleChange}
             type="password"
@@ -68,7 +128,7 @@ export const RegisterComp = () => {
           />
 
           <p>Confirm Password</p>
-          <input type="password" className="inputcom" />
+          <input type="password" className="inputcom" /> */}
 
           {loading ? (
             <ColorButton disabled>
@@ -78,12 +138,12 @@ export const RegisterComp = () => {
             <ColorButton onClick={handleSubmit}>Continue</ColorButton>
           )}
 
-          <Link className="auth-link" to={"/login"}>
+          {/* <Link className="auth-link" to={"/login"}>
             Already have an account
-          </Link>
+          </Link> */}
           <p className="contract">
-            By registering you agree to Messenger's{" "}
-            <span>Terms of Service</span> and <span>Privacy Policy</span>.
+            {/* By registering you agree to Messenger's{" "}
+            <span>Terms of Service</span> and <span>Privacy Policy</span>. */}
           </p>
         </div>
       </div>
