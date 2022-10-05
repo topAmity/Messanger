@@ -24,6 +24,7 @@ export const RegisterComp = () => {
     displayName: "",
     userId: "",
   });
+
   const [onConnected, setOnConnected] = useState(false);
   const navigate = useNavigate();
   const dispatch = useDispatch();

@@ -10,6 +10,8 @@ import { useSelector } from "react-redux";
 import { accessChat, makeRecentChatApi } from "./Redux/RecentChat/action";
 import { selectChat } from "./Redux/Chatting/action";
 import { removeSeenMsg } from "./Redux/Notification/action";
+import { UserRepository } from "@amityco/js-sdk";
+
 export const MyChat = () => {
   const [search, setSearch] = useState(false);
   const { search_result, loading, error } = useSelector(
@@ -18,16 +20,19 @@ export const MyChat = () => {
   const { recent_chat, loading: chat_loading } = useSelector(
     (store) => store.recentChat
   );
+  console.log("search result!!!!", search_result);
   const { user, token } = useSelector((store) => store.user);
   const { chatting } = useSelector((store) => store.chatting);
   const { notification, unseenmsg } = useSelector(
     (store) => store.notification
   );
   const dispatch = useDispatch();
+  const [keyword, setKeyword] = useState("");
   useEffect(() => {
     if (token) dispatch(makeRecentChatApi(token));
   }, [user]);
   const ref = useRef();
+
   const handleQuery = (e) => {
     let id;
     return function (e) {
@@ -37,10 +42,18 @@ export const MyChat = () => {
       }
       if (ref.current) clearTimeout(ref.current);
       setSearch(true);
-      ref.current = setTimeout(() => {
-        dispatch(makeSearchApi(e.target.value));
-      }, 1000);
+      setKeyword(e.target.value);
     };
+  };
+  function onClickSearch() {
+    // queryAllUser(keyword);
+    console.log(keyword);
+    dispatch(makeSearchApi(keyword));
+  }
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter") {
+      onClickSearch();
+    }
   };
 
   return (
@@ -55,11 +68,12 @@ export const MyChat = () => {
           {/* <AddIcon /> */}
         </div>
         <div className="search-cont">
-          <SearchIcon />
+          <SearchIcon onClick={onClickSearch} />
           <input
             onChange={handleQuery()}
             type="text"
             placeholder="Search users"
+            onKeyDown={handleKeyDown}
           />
         </div>
       </div>
@@ -218,7 +232,7 @@ export const SearchUserComp = ({
         <div>{<Avatar src={pic} />}</div>
         <div>
           <p className="name">{name}</p>
-          <p className="chat">Email: {email}</p>
+          {/* <p className="chat">Email: {email}</p> */}
         </div>
       </div>
     </div>
