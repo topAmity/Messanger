@@ -23,7 +23,7 @@ export const RegisterComp = () => {
   const [amityUser, setAmityUser] = useState({
     displayName: "",
     userId: "",
-    email:""
+    email: "",
   });
 
   const [onConnected, setOnConnected] = useState(false);
@@ -42,8 +42,8 @@ export const RegisterComp = () => {
     client.on("connectionStatusChanged", ({ newValue }) => {
       console.log("newValue: ", newValue);
       if (newValue === ConnectionStatus.Connected) {
-        console.log("connected to asc "+amityUser.displayName);
-        registerUser(amityUser.userId,amityUser.displayName,amityUser.email);
+        console.log("connected to asc " + amityUser.displayName);
+        registerUser(amityUser.userId, amityUser.displayName, amityUser.email);
         setOnConnected(true);
       } else {
         console.log(" not connected to asc");
@@ -70,12 +70,12 @@ export const RegisterComp = () => {
   const handleSubmit = () => {
     // const url = "";
     login();
-    
+
     // if (onConnected) {
     //   return <Navigate to={"/"} />;
     // }
   };
-  function registerUser(userId,displayName,email) {
+  function registerUser(userId, displayName, email) {
     axios
       .post("http://localhost:4000/v1/users", {
         userId: userId,
@@ -89,9 +89,11 @@ export const RegisterComp = () => {
         console.log(error);
       });
   }
+  const authUser = (payload) => ({ type: "AUTH_ID", payload });
   useEffect(() => {
     if (onConnected) {
       navigate("/");
+      dispatch(authUser(amityUser));
     }
   }, [onConnected]);
 
@@ -116,7 +118,11 @@ export const RegisterComp = () => {
         </div>
         <div className="details-cont">
           <p>Display name</p>
-          <input onChange={handleChange} name="displayName" className="inputcom" />
+          <input
+            onChange={handleChange}
+            name="displayName"
+            className="inputcom"
+          />
 
           <p>User ID</p>
           <input onChange={handleChange} name="userId" className="inputcom" />

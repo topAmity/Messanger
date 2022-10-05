@@ -27,6 +27,15 @@ export const authReducer = (store = initState, { type, payload }) => {
         error: false,
         token: payload.token,
       };
+    case "AUTH_ID":
+      return {
+        ...store,
+        userId: payload,
+        loading: false,
+        error: false,
+        token: payload.token,
+      };
+
     case UPLOAD_PIC:
       return {
         ...store,

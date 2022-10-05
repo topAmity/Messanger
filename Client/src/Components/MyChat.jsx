@@ -10,7 +10,7 @@ import { useSelector } from "react-redux";
 import { accessChat, makeRecentChatApi } from "./Redux/RecentChat/action";
 import { selectChat } from "./Redux/Chatting/action";
 import { removeSeenMsg } from "./Redux/Notification/action";
-import { UserRepository } from "@amityco/js-sdk";
+import { ChannelRepository, ChannelType } from "@amityco/js-sdk";
 
 export const MyChat = () => {
   const [search, setSearch] = useState(false);
@@ -222,9 +222,21 @@ export const SearchUserComp = ({
   setSearch,
 }) => {
   const dispatch = useDispatch();
+  const storeUserData = useSelector((store) => store.user);
+
   const handleSubmitForAcceChat = () => {
-    dispatch(accessChat(_id, token, recent_chat));
-    setSearch(false);
+    // dispatch(accessChat(_id, token, recent_chat));
+    console.log("_id: ", _id);
+    console.log("storeData: ", storeUserData.userId.userId);
+    const userId = storeUserData.userId.userId;
+    // setSearch(false);
+    const liveChannel = ChannelRepository.createChannel({
+      type: ChannelType.Conversation,
+      userIds: [userId, _id],
+    });
+    liveChannel.once("dataUpdated", (data) => {
+      console.log("channel created", data);
+    });
   };
   return (
     <div onClick={handleSubmitForAcceChat} className="user">
