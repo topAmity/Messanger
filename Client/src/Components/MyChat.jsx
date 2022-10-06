@@ -223,7 +223,8 @@ export const SearchUserComp = ({
 }) => {
   const dispatch = useDispatch();
   const storeUserData = useSelector((store) => store.user);
-
+  const SELECT_CHAT = "SELECT_CHAT";
+  const selectChat = (payload) => ({ type: SELECT_CHAT, payload });
   const handleSubmitForAcceChat = () => {
     // dispatch(accessChat(_id, token, recent_chat));
     console.log("_id: ", _id);
@@ -236,6 +237,19 @@ export const SearchUserComp = ({
     });
     liveChannel.once("dataUpdated", (data) => {
       console.log("channel created", data);
+      dispatch(
+        selectChat({
+          isGroupChat: false,
+          index: 0,
+          user: {
+            pic: pic,
+            name: name,
+            userId: _id,
+          },
+          _id: data.channelId,
+          chatName: "Mock",
+        })
+      );
     });
   };
   return (

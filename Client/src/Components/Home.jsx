@@ -9,7 +9,9 @@ import React, { useEffect, useState } from "react";
 
 export const HomeComp = () => {
   const { user, loading, error } = useSelector((store) => store.user);
+  const amityUser = useSelector((store) => store.user);
   const { chatting } = useSelector((store) => store.chatting);
+  console.log("chatting: ", chatting);
 
   // if (!user._id) {
   //   return <Navigate to="/register" />;
@@ -19,12 +21,19 @@ export const HomeComp = () => {
     <div className="home-cont">
       <SideNavbar />
       <MyChat />
-      {chatting._id ? <ChattingPage /> : <MessageStarter {...user} />}
+      {console.log("====user====", amityUser)}
+      {chatting._id ? (
+        <ChattingPage />
+      ) : (
+        <MessageStarter pic={user.pic} name={amityUser.userId.displayName} />
+      )}
     </div>
   );
 };
 
 const MessageStarter = ({ pic, name }) => {
+  console.log("pic: ", pic);
+  console.log("name: ", name);
   return (
     <div className="chattingpage start-msg">
       <div>

@@ -12,7 +12,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { fetchCurrentMessages, sendMessageApi } from "./Redux/Chatting/action";
 import { sendMessage } from "./Redux/Chatting/action";
 import { addUnseenmsg } from "./Redux/Notification/action";
-
+import { MessageRepository } from "@amityco/js-sdk";
 import io from "socket.io-client";
 const SERVER_POINT = "https://messenger-clo.herokuapp.com";
 var socket, currentChattingWith;
@@ -20,50 +20,95 @@ var socket, currentChattingWith;
 export const ChattingPage = () => {
   const { user, token } = useSelector((store) => store.user);
   const { messages } = useSelector((store) => store.chatting);
+  const reduxUserStore = useSelector((store) => store.user);
+  console.log("reduxStore: ", reduxUserStore);
+  const [chatMessage, setChatMessage] = useState([]);
   var { unseenmsg } = useSelector((store) => store.notification);
   const {
     chatting: {
       isGroupChat,
       chatName,
-      user: { pic, name },
+      user: { pic, name, userId },
       _id,
     },
   } = useSelector((store) => store.chatting);
   const scrolldiv = createRef();
   const dispatch = useDispatch();
-  useEffect(() => {
-    socket = io(SERVER_POINT);
-    socket.emit("setup", user);
-    socket.on("connected", () => {
-      // setconnectedtosocket(true);
-    });
-  }, []);
-  useEffect(() => {
-    //_id is of selected chat so that user can join same chat room
-    if (!_id) return;
-    dispatch(fetchCurrentMessages(_id, token, socket));
+  console.log("userId", reduxUserStore.userId.userId);
+  console.log("senderId", userId);
+  function queryChatMessage() {
+    console.log("channel id", _id);
+    const liveCollection = MessageRepository.queryMessages({ channelId: _id });
+    let messages = liveCollection.models;
 
-    currentChattingWith = _id;
-  }, [_id]);
-  useEffect(() => {
-    const scrollToBottom = (node) => {
-      node.scrollTop = node.scrollHeight;
-    };
-    scrollToBottom(scrolldiv.current);
-  });
-
-  useEffect(() => {
-    socket.on("message recieved", (newMessage) => {
-      if (!currentChattingWith || currentChattingWith !== newMessage.chat._id) {
-        handleNotyfy(newMessage);
-      } else {
-        dispatch(sendMessage(newMessage));
-      }
+    liveCollection.on("dataUpdated", (data) => {
+      messages = data;
+      console.log("messages: ", messages);
+      let mappedMessages = messages.map((item) => {
+        return {
+          _id: reduxUserStore.userId.userId,
+          sender: {
+            _id: userId,
+            name: "sdsd",
+            email: "dfsdsf@mdvmkodsv.com",
+            pic: "https://icon-library.com/images/anonymous-avatar-icon/anonymous-avatar-icon-25.jpg",
+          },
+          content: item.data.text,
+          chat: {
+            _id: item.messageId,
+            chatName: "sender",
+            isGroupChat: false,
+            users: [userId, reduxUserStore.userId.userId],
+            createdAt: item.createdAt,
+            updatedAt: item.editedAt,
+            latestMessage: "633e8d007dbc394e1dd2a711",
+          },
+          readBy: [],
+          createdAt: item.createdAt,
+          updatedAt: item.createdAt,
+        };
+      });
+      console.log("mappedMessages: ", mappedMessages);
+      setChatMessage(mappedMessages);
     });
+  }
+  useEffect(() => {
+    queryChatMessage();
   }, []);
-  const handleNotyfy = (newMessage) => {
-    dispatch(addUnseenmsg(newMessage));
-  };
+
+  // useEffect(() => {
+  //   socket = io(SERVER_POINT);
+  //   socket.emit("setup", user);
+  //   socket.on("connected", () => {
+  //     // setconnectedtosocket(true);
+  //   });
+  // }, []);
+  // useEffect(() => {
+  //   //_id is of selected chat so that user can join same chat room
+  //   if (!_id) return;
+  //   dispatch(fetchCurrentMessages(_id, token, socket));
+
+  //   currentChattingWith = _id;
+  // }, [_id]);
+  // useEffect(() => {
+  //   const scrollToBottom = (node) => {
+  //     node.scrollTop = node.scrollHeight;
+  //   };
+  //   scrollToBottom(scrolldiv.current);
+  // });
+
+  // useEffect(() => {
+  //   socket.on("message recieved", (newMessage) => {
+  //     if (!currentChattingWith || currentChattingWith !== newMessage.chat._id) {
+  //       handleNotyfy(newMessage);
+  //     } else {
+  //       dispatch(sendMessage(newMessage));
+  //     }
+  //   });
+  // }, []);
+  // const handleNotyfy = (newMessage) => {
+  //   dispatch(addUnseenmsg(newMessage));
+  // };
   return (
     <div className="chattingpage">
       <div className="top-header">
@@ -81,7 +126,7 @@ export const ChattingPage = () => {
         </div>
       </div>
       <div ref={scrolldiv} className="live-chat">
-        {messages.map((el, index) => (
+        {chatMessage.map((el, index) => (
           <div
             key={index}
             className={

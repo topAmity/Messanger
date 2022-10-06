@@ -46,6 +46,7 @@ export const makeNewGroup = (group_data, token) => async (dispatch) => {
       },
     });
     let data = await res.json();
+    console.log("data: ", data);
     dispatch(newCreatedChat(data));
   } catch (err) {
     dispatch(recentError(true));
