@@ -11,6 +11,7 @@ import { accessChat, makeRecentChatApi } from "./Redux/RecentChat/action";
 import { selectChat } from "./Redux/Chatting/action";
 import { removeSeenMsg } from "./Redux/Notification/action";
 import { ChannelRepository, ChannelType } from "@amityco/js-sdk";
+import axios from "axios";
 
 export const MyChat = () => {
   const [search, setSearch] = useState(false);
@@ -50,6 +51,7 @@ export const MyChat = () => {
     console.log(keyword);
     dispatch(makeSearchApi(keyword));
   }
+
   const handleKeyDown = (e) => {
     if (e.key === "Enter") {
       onClickSearch();
@@ -225,6 +227,21 @@ export const SearchUserComp = ({
   const storeUserData = useSelector((store) => store.user);
   const SELECT_CHAT = "SELECT_CHAT";
   const selectChat = (payload) => ({ type: SELECT_CHAT, payload });
+
+  function createChannel(channelId, user1, user2) {
+    axios
+      .post("http://localhost:4000/v1/channels", {
+        channelId: channelId,
+        user1: user1,
+        user2: user2,
+      })
+      .then(function (response) {
+        console.log(response);
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+  }
   const handleSubmitForAcceChat = () => {
     // dispatch(accessChat(_id, token, recent_chat));
     console.log("_id: ", _id);
@@ -250,6 +267,7 @@ export const SearchUserComp = ({
           chatName: "Mock",
         })
       );
+      createChannel(data.channelId, userId, _id);
     });
   };
   return (
