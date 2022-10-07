@@ -21,7 +21,7 @@ export const ChattingPage = () => {
   const { user, token } = useSelector((store) => store.user);
   const { messages } = useSelector((store) => store.chatting);
   const reduxUserStore = useSelector((store) => store.user);
-  console.log("reduxStore: ", reduxUserStore);
+
   const [chatMessage, setChatMessage] = useState([]);
   var { unseenmsg } = useSelector((store) => store.notification);
   const {
@@ -34,19 +34,18 @@ export const ChattingPage = () => {
   } = useSelector((store) => store.chatting);
   const scrolldiv = createRef();
   const dispatch = useDispatch();
-  console.log("userId", reduxUserStore.userId.userId);
-  console.log("senderId", userId);
+  // console.log("userId", reduxUserStore.userId.userId);
+  // console.log("senderId", userId);
   function queryChatMessage() {
-    console.log("channel id", _id);
     const liveCollection = MessageRepository.queryMessages({ channelId: _id });
     let messages = liveCollection.models;
 
     liveCollection.on("dataUpdated", (data) => {
       messages = data;
-      console.log("messages: ", messages);
+      // console.log("messages: ", messages);
       let mappedMessages = messages.map((item) => {
         return {
-          _id: reduxUserStore.userId.userId,
+          _id: item.userId,
           sender: {
             _id: userId,
             name: "sdsd",
@@ -68,47 +67,19 @@ export const ChattingPage = () => {
           updatedAt: item.createdAt,
         };
       });
-      console.log("mappedMessages: ", mappedMessages);
+      // console.log("mappedMessages: ", mappedMessages);
+
       setChatMessage(mappedMessages);
     });
   }
   useEffect(() => {
+    if (chatMessage.length > 0) {
+      setChatMessage([]);
+    }
+
     queryChatMessage();
-  }, []);
+  }, [_id]);
 
-  // useEffect(() => {
-  //   socket = io(SERVER_POINT);
-  //   socket.emit("setup", user);
-  //   socket.on("connected", () => {
-  //     // setconnectedtosocket(true);
-  //   });
-  // }, []);
-  // useEffect(() => {
-  //   //_id is of selected chat so that user can join same chat room
-  //   if (!_id) return;
-  //   dispatch(fetchCurrentMessages(_id, token, socket));
-
-  //   currentChattingWith = _id;
-  // }, [_id]);
-  // useEffect(() => {
-  //   const scrollToBottom = (node) => {
-  //     node.scrollTop = node.scrollHeight;
-  //   };
-  //   scrollToBottom(scrolldiv.current);
-  // });
-
-  // useEffect(() => {
-  //   socket.on("message recieved", (newMessage) => {
-  //     if (!currentChattingWith || currentChattingWith !== newMessage.chat._id) {
-  //       handleNotyfy(newMessage);
-  //     } else {
-  //       dispatch(sendMessage(newMessage));
-  //     }
-  //   });
-  // }, []);
-  // const handleNotyfy = (newMessage) => {
-  //   dispatch(addUnseenmsg(newMessage));
-  // };
   return (
     <div className="chattingpage">
       <div className="top-header">
@@ -130,24 +101,24 @@ export const ChattingPage = () => {
           <div
             key={index}
             className={
-              el.sender._id != user._id ? "rihgtuser-chat" : "leftuser-chat"
+              el.sender._id == el._id ? "rihgtuser-chat" : "leftuser-chat"
             }
           >
-            <div
-              className={el.sender._id != user._id ? "right-avt" : "left-avt"}
-            >
-              <div className={ChatlogicStyling(el.sender._id, user._id)}>
+            {/* {console.log("sender vs user", el.sender._id + "vs" + el._id)} */}
+            <div className={el.sender._id == el._id ? "right-avt" : "left-avt"}>
+              <div className={ChatlogicStyling(el.sender._id, el._id)}>
                 <p>{el.content}</p>
                 <p className="time chat-time">
                   {new Date(el.createdAt).getHours() +
                     ":" +
+                    (new Date(el.createdAt).getMinutes() < 10 ? "0" : "") +
                     new Date(el.createdAt).getMinutes()}
                 </p>
               </div>
 
               {isSameSender(messages, index) ? (
                 <Avatar
-                  src={el.sender._id != user._id ? el.sender.pic : user.pic}
+                  src={el.sender._id != el._id ? el.sender.pic : el.pic}
                 />
               ) : (
                 <div className="blank-div"></div>
@@ -175,31 +146,45 @@ const ColorButton = styled(Button)(() => ({
 }));
 function InputContWithEmog({ id, token, socket }) {
   const [text, setText] = useState("");
-  const dispatch = useDispatch();
 
-  function handleOnEnter(text) {
-    dispatch(
-      sendMessageApi(
-        {
-          content: text,
-          chatId: id,
-        },
-        token,
-        socket
-      )
-    );
+  // const dispatch = useDispatch();
+
+  function sendChatMessage() {
+    const liveObject = MessageRepository.createTextMessage({
+      channelId: id,
+      text: text,
+    });
+
+    liveObject.on("dataUpdate", (message) => {
+      console.log("message is created", message);
+    });
+  }
+
+  function handleOnEnter() {
+    // dispatch(
+    //   sendMessageApi(
+    //     {
+    //       content: text,
+    //       chatId: id,
+    //     },
+    //     token,
+    //     socket
+    //   )
+    // );
+    sendChatMessage();
   }
   function handleChatClick() {
-    dispatch(
-      sendMessageApi(
-        {
-          content: text,
-          chatId: id,
-        },
-        token,
-        socket
-      )
-    );
+    // dispatch(
+    //   sendMessageApi(
+    //     {
+    //       content: text,
+    //       chatId: id,
+    //     },
+    //     token,
+    //     socket
+    //   )
+    // );
+    sendChatMessage();
     setText("");
   }
 

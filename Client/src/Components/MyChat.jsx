@@ -229,18 +229,18 @@ export const SearchUserComp = ({
   const selectChat = (payload) => ({ type: SELECT_CHAT, payload });
 
   function createChannel(channelId, user1, user2) {
-    axios
-      .post("http://localhost:4000/v1/channels", {
-        channelId: channelId,
-        user1: user1,
-        user2: user2,
-      })
-      .then(function (response) {
-        console.log(response);
-      })
-      .catch(function (error) {
-        console.log(error);
-      });
+    // axios
+    //   .post("http://localhost:4000/v1/channels", {
+    //     channelId: channelId,
+    //     user1: user1,
+    //     user2: user2,
+    //   })
+    //   .then(function (response) {
+    //     console.log(response);
+    //   })
+    //   .catch(function (error) {
+    //     console.log(error);
+    //   });
   }
   const handleSubmitForAcceChat = () => {
     // dispatch(accessChat(_id, token, recent_chat));
@@ -270,6 +270,7 @@ export const SearchUserComp = ({
       createChannel(data.channelId, userId, _id);
     });
   };
+
   return (
     <div onClick={handleSubmitForAcceChat} className="user">
       <div className="history-cont">

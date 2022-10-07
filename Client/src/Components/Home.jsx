@@ -12,10 +12,13 @@ export const HomeComp = () => {
   const amityUser = useSelector((store) => store.user);
   const { chatting } = useSelector((store) => store.chatting);
   console.log("chatting: ", chatting);
-
-  // if (!user._id) {
-  //   return <Navigate to="/register" />;
-  // }
+  const navigate = useNavigate();
+  useEffect(() => {
+    console.log("amityUser: ", amityUser);
+    if (!amityUser.userId) {
+      navigate("/register");
+    }
+  }, []);
 
   return (
     <div className="home-cont">
@@ -25,7 +28,10 @@ export const HomeComp = () => {
       {chatting._id ? (
         <ChattingPage />
       ) : (
-        <MessageStarter pic={user.pic} name={amityUser.userId.displayName} />
+        <MessageStarter
+          pic={user.pic}
+          name={amityUser.userId && amityUser.userId.displayName}
+        />
       )}
     </div>
   );
