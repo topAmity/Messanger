@@ -126,7 +126,11 @@ export default function Notificationcomp() {
 
   return (
     <div>
-      <NotificationsIcon aria-describedby={id} onClick={handleClick} />
+      {/* <NotificationsIcon
+        color="black"
+        aria-describedby={id}
+        onClick={handleClick}
+      /> */}
       <Popover
         id={id}
         open={open}
