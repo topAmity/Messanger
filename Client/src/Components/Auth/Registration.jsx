@@ -77,7 +77,7 @@ export const RegisterComp = () => {
   };
   function registerUser(userId, displayName, email) {
     axios
-      .post("http://localhost:4000/v1/users", {
+      .post("https://power-school-demo.herokuapp.com/v1/users", {
         userId: userId,
         displayName: displayName,
         email: email,

@@ -230,7 +230,7 @@ export const SearchUserComp = ({
 
   function createChannel(channelId, user1, user2) {
     axios
-      .post("http://localhost:4000/v1/channels", {
+      .post("https://power-school-demo.herokuapp.com/v1/channels", {
         channelId: channelId,
         user1: user1,
         user2: user2,
