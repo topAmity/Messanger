@@ -1,5 +1,5 @@
 import "./auth.css";
-import avatar from "./profileimg.png";
+import avatar from "./amity-no-bg.png";
 import React, { useEffect, useState } from "react";
 import { styled } from "@mui/material/styles";
 import Button from "@mui/material/Button";
@@ -57,16 +57,16 @@ export const RegisterComp = () => {
     // setRegData({ ...regData, [name]: value });
     setAmityUser({ ...amityUser, [name]: value });
   };
-  const handleInputFile = (e) => {
-    const file = e.target.files[0];
+  // const handleInputFile = (e) => {
+  //   const file = e.target.files[0];
 
-    const reader = new FileReader();
-    reader.onloadend = () => {
-      dispatch(uploadPic(reader.result));
-      // setPic(reader.result);
-    };
-    reader.readAsDataURL(file);
-  };
+  //   const reader = new FileReader();
+  //   reader.onloadend = () => {
+  //     dispatch(uploadPic(reader.result));
+  //     // setPic(reader.result);
+  //   };
+  //   reader.readAsDataURL(file);
+  // };
   const handleSubmit = () => {
     // const url = "";
     login();
@@ -109,12 +109,13 @@ export const RegisterComp = () => {
         <h2 className="auth-heading">Create an account</h2>
         <div>
           <div className="profile-pic">
-            <input onChange={handleInputFile} type="file" name="" id="file" />
-            <label htmlFor="file" id="uploadBtn">
-              <img id="photo" src={user.pic ? user.pic : avatar} />
-            </label>
+            {/* <input onChange={handleInputFile} type="file" name="" id="file" /> */}
+            {/* <label htmlFor="file" id="uploadBtn"> */}
+            {/* <img id="photo" src={user.pic ? user.pic : avatar} /> */}
+            <img id="photo" src={avatar} />
+            {/* </label> */}
           </div>
-          <p className="profile-text">Choose Profile</p>
+          {/* <p className="profile-text">Choose Profile</p> */}
         </div>
         <div className="details-cont">
           <p>Display name</p>
@@ -163,8 +164,9 @@ const ColorButton = styled(Button)(() => ({
   color: "white",
   fontSize: "20px",
   textTransform: "none",
-  backgroundColor: "#5865f2",
+  backgroundColor: "#06be8b",
   "&:hover": {
-    backgroundColor: "#3a45c3",
+    backgroundColor: "#039f73",
   },
+  borderRadius: "15px",
 }));

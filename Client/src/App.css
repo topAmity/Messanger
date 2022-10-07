@@ -1,6 +1,6 @@
 body {
   margin: 0px;
-  background-image: url("./Components/Auth/background.webp");
+  background-image: url("./Components/Auth/green-bg.jpg");
   background-size: cover;
   box-sizing: border-box;
 }
@@ -10,7 +10,7 @@ body {
   max-width: 70px;
   height: 100vh;
   min-height: 570px;
-  background-color: #fff;
+  background-color: #212121;
   display: flex;
   z-index: 9;
   box-shadow: 0 2px 4px rgb(15 34 58 / 12%);
@@ -28,11 +28,11 @@ body {
 }
 .mid-icon {
   height: 60%;
-  color: #6f7178;
+  color: #ffffff;
 }
 .bottom-icon {
   height: 10%;
-  color: #6f7178;
+  color: #ffffff;
 }
 .side-nav svg {
   cursor: pointer;
@@ -43,7 +43,7 @@ body {
   display: flex;
 }
 .mychat-cont {
-  color: #495057;
+  color: #ffffff;
   width: 26%;
   height: 100vh;
   min-width: 270px;
@@ -248,7 +248,7 @@ body {
   gap: 10px;
 }
 .left-msg {
-  background-color: #7269ef;
+  background-color: #27b48c;
   padding: 8px;
   border-radius: 10px;
   margin: 3px;

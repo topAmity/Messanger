@@ -139,9 +139,9 @@ const ColorButton = styled(Button)(() => ({
   textTransform: "none",
   padding: "12px",
   marginRight: "15px",
-  backgroundColor: "#5865f2",
+  backgroundColor: "#27b48c",
   "&:hover": {
-    backgroundColor: "#3a45c3",
+    backgroundColor: "#0f8e6a",
   },
 }));
 function InputContWithEmog({ id, token, socket }) {
