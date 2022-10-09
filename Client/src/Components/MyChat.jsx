@@ -10,19 +10,31 @@ import { useSelector } from "react-redux";
 import { accessChat, makeRecentChatApi } from "./Redux/RecentChat/action";
 import { selectChat } from "./Redux/Chatting/action";
 import { removeSeenMsg } from "./Redux/Notification/action";
-import { ChannelRepository, ChannelType } from "@amityco/js-sdk";
+import {
+  ChannelRepository,
+  ChannelType,
+  ChannelFilter,
+  ChannelSortingMethod,
+  MemberFilter,
+} from "@amityco/js-sdk";
 import axios from "axios";
 
 export const MyChat = () => {
   const [search, setSearch] = useState(false);
+  const [recentChat, setRecentChat] = useState([]);
+  const [channelList, setChannelList] = useState([]);
+  console.log("recentChat: ", recentChat);
   const { search_result, loading, error } = useSelector(
     (store) => store.search
   );
   const { recent_chat, loading: chat_loading } = useSelector(
     (store) => store.recentChat
   );
+  const SEARCH_RESULT = "SEARCH_RESULT";
+  const searchResult = (payload) => ({ type: SEARCH_RESULT, payload });
   console.log("search result!!!!", search_result);
   const { user, token } = useSelector((store) => store.user);
+  const { userId } = useSelector((store) => store.user);
   const { chatting } = useSelector((store) => store.chatting);
   const { notification, unseenmsg } = useSelector(
     (store) => store.notification
@@ -57,6 +69,92 @@ export const MyChat = () => {
       onClickSearch();
     }
   };
+  useEffect(() => {
+    queryRecentChat();
+  }, []);
+
+  function queryRecentChat() {
+    console.log("=======user=======", userId);
+
+    let channels;
+    console.log("channels: pass this===== ", channels);
+
+    const liveCollection = ChannelRepository.queryChannels({
+      types: [ChannelType.Conversation],
+      filter: ChannelFilter.Member,
+      isDeleted: false,
+      sortBy: ChannelSortingMethod.LastCreated,
+    });
+
+    liveCollection.on("dataUpdated", (models) => {
+      channels = models;
+      console.log("=====channels22:===== ", channels);
+      console.log("account", userId.userId);
+
+      setChannelList(models);
+    });
+  }
+  function filterRecentChat() {
+    const account = userId.userId;
+    let resultArr = [];
+    let senderName = "";
+    channelList.forEach((model) => {
+      let members;
+      const liveCollection = ChannelRepository.queryMembers({
+        channelId: model.channelId,
+        memberships: [MemberFilter.Member],
+      });
+      console.log("liveCollection: ", liveCollection.models);
+      members = liveCollection.models;
+
+      let sender = members.filter((item) => item.userId !== account);
+      if (sender.length == 1) {
+        senderName = sender[0].userId;
+      } else if (sender.length > 1) {
+        let userIdArr = sender.map((item) => item.userId);
+        let chatName = userIdArr.join(",");
+        senderName = chatName;
+      } else {
+        senderName = "Empty Chat";
+      }
+      resultArr.push({
+        _id: senderName,
+        name: senderName,
+      });
+      setRecentChat(resultArr);
+      console.log("resultArr: ", resultArr);
+    });
+    //   let sender;
+    //   liveCollection.on("dataUpdated", (newModels) => {
+    //     members = newModels;
+
+    //     sender = members.filter((item) => item.userId !== account);
+
+    //     if (sender.length == 1) {
+    //       senderName = sender[0].userId;
+    //     } else if (sender.length > 1) {
+    //       let userIdArr = sender.map((item) => item.userId);
+    //       let chatName = userIdArr.join(",");
+    //       senderName = chatName;
+    //     } else {
+    //       senderName = "Empty Chat";
+    //     }
+
+    //     resultArr.push({
+    //       _id: senderName,
+    //       name: senderName,
+    //     });
+    //     setRecentChat(resultArr);
+    //   });
+  }
+  useEffect(() => {
+    filterRecentChat();
+  }, [channelList]);
+
+  // useEffect(() => {
+  //   // dispatch(searchResult(recentChat));
+  //   console.log("recentChat: ", recentChat);
+  // }, [recentChat]);
 
   return (
     <div className="mychat-cont">
@@ -92,14 +190,13 @@ export const MyChat = () => {
                   setSearch={setSearch}
                 />
               ))
-            : !chat_loading &&
-              recent_chat.map((el, index) => (
-                <ChatUserComp
+            : recentChat.map((el, index) => (
+                <SearchUserComp
                   key={el._id}
                   {...el}
-                  index={index}
-                  chattingwith={chatting._id}
-                  id={user._id}
+                  token={token}
+                  recent_chat={recent_chat}
+                  setSearch={setSearch}
                 />
               ))}
         </div>
@@ -179,7 +276,7 @@ const ChatUserComp = ({
   return (
     <div
       onClick={handleSelectChat}
-      className={chattingwith == _id ? "user selectUser" : "user"}
+      // className={chattingwith == _id ? "user selectUser" : "user"}
     >
       <div className="history-cont">
         {isGroupChat ? (
@@ -255,6 +352,7 @@ export const SearchUserComp = ({
     const liveChannel = ChannelRepository.createChannel({
       type: ChannelType.Conversation,
       userIds: [userId, _id],
+      displayName: `${userId},${_id}`,
     });
     liveChannel.once("dataUpdated", (data) => {
       console.log("channel created", data);

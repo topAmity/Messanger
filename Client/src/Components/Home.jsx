@@ -13,6 +13,26 @@ export const HomeComp = () => {
   const { chatting } = useSelector((store) => store.chatting);
   console.log("chatting: ", chatting);
   const navigate = useNavigate();
+  // useEffect(() => {
+  //   queryRecentChat();
+  // }, []);
+
+  // function queryRecentChat() {
+  //   let channels;
+  //   console.log("channels: pass this===== ", channels);
+
+  //   const liveCollection = ChannelRepository.queryChannels({
+  //     types: [ChannelType.Conversation],
+  //     filter: ChannelFilter.Member,
+  //     isDeleted: false,
+  //     sortBy: ChannelSortingMethod.LastCreated,
+  //   });
+
+  //   liveCollection.on("dataUpdated", (models) => {
+  //     channels = models;
+  //     console.log("=====channels:===== ", channels);
+  //   });
+  // }
   useEffect(() => {
     console.log("amityUser: ", amityUser);
     if (!amityUser.userId) {

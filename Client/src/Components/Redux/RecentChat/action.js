@@ -5,6 +5,7 @@ export const NEW_CREATED_CHAT = "NEW_CREATED_CHAT";
 import { selectChat } from "../Chatting/action";
 export const recentLoding = (payload) => ({ type: RECENT_LOADING, payload });
 export const recentError = (payload) => ({ type: RECENT_ERROR, payload });
+
 export const recentChatResult = (payload) => ({
   type: ADD_RECENT_CHAT,
   payload,
