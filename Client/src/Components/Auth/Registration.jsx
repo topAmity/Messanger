@@ -34,22 +34,29 @@ export const RegisterComp = () => {
     const client = new AmityClient({
       apiKey: apiKey,
       apiEndpoint: ApiEndpoint.SG,
-    }); // modify your server region here e.g ApiEndpoint.EU
-    client.registerSession({
-      userId: amityUser.userId,
-      displayName: amityUser.displayName,
-    }); // Add your own userId and displayName
-    client.on("connectionStatusChanged", ({ newValue }) => {
-      console.log("newValue: ", newValue);
-      if (newValue === ConnectionStatus.Connected) {
-        console.log("connected to asc " + amityUser.displayName);
-        registerUser(amityUser.userId, amityUser.displayName, amityUser.email);
-        setOnConnected(true);
-      } else {
-        console.log(" not connected to asc");
-      }
     });
-    console.log("client: ", client);
+    // modify your server region here e.g ApiEndpoint.EU
+    if (amityUser.userId) {
+      client.registerSession({
+        userId: amityUser.userId,
+        displayName: amityUser.displayName,
+      }); // Add your own userId and displayName
+      client.on("connectionStatusChanged", ({ newValue }) => {
+        console.log("newValue: ", newValue);
+        if (newValue === ConnectionStatus.Connected) {
+          console.log("connected to asc " + amityUser.displayName);
+          registerUser(
+            amityUser.userId,
+            amityUser.displayName,
+            amityUser.email
+          );
+          setOnConnected(true);
+        } else {
+          console.log(" not connected to asc");
+        }
+      });
+      console.log("client: ", client);
+    }
   }
 
   const handleChange = (e) => {
