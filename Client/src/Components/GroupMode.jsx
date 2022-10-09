@@ -138,9 +138,9 @@ export default function CustomizedDialogs() {
     setuserError({ error: false, message: "", type: "" });
     setSelectedUsers([...selectedUsers, user]);
   };
-  const handleremove = (deluser) => {
-    setSelectedUsers(selectedUsers.filter((user) => user._id != deluser._id));
-  };
+  // const handleremove = (deluser) => {
+  //   setSelectedUsers(selectedUsers.filter((user) => user._id != deluser._id));
+  // };
 
   return (
     <div>
@@ -187,7 +187,7 @@ export default function CustomizedDialogs() {
                 <p>{el.name}</p>{" "}
                 <CloseIcon
                   onClick={() => {
-                    handleremove(el);
+                    // handleremove(el);
                   }}
                 />
               </div>

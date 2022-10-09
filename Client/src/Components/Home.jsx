@@ -34,11 +34,10 @@ export const HomeComp = () => {
   //   });
   // }
   useEffect(() => {
-    console.log("amityUser: ", amityUser);
-    if (!amityUser.userId) {
+    if (amityUser?.userId.userId.length == 0) {
       navigate("/register");
     }
-  }, []);
+  }, [amityUser]);
 
   return (
     <div className="home-cont">

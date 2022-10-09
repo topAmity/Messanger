@@ -12,6 +12,7 @@ const user = JSON.parse(localStorage.getItem("userInfo")) || {
 };
 const initState = {
   user: user.user,
+  userId: { displayName: "", userId: "", email: "" },
   loading: false,
   error: false,
   token: user.token,

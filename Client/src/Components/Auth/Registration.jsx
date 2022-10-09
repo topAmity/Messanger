@@ -36,7 +36,7 @@ export const RegisterComp = () => {
       apiEndpoint: ApiEndpoint.SG,
     });
     // modify your server region here e.g ApiEndpoint.EU
-    if (amityUser.userId) {
+    if (amityUser.userId.length > 0) {
       client.registerSession({
         userId: amityUser.userId,
         displayName: amityUser.displayName,

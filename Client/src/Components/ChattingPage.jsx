@@ -34,8 +34,7 @@ export const ChattingPage = () => {
   } = useSelector((store) => store.chatting);
   const scrolldiv = createRef();
   const dispatch = useDispatch();
-  // console.log("userId", reduxUserStore.userId.userId);
-  // console.log("senderId", userId);
+
   function queryChatMessage() {
     const liveCollection = MessageRepository.queryMessages({ channelId: _id });
     let messages = liveCollection.models;
