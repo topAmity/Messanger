@@ -107,7 +107,7 @@ export const MyChat = () => {
       console.log("liveCollection: ", liveCollection.models);
       members = liveCollection.models;
 
-      let sender = members.filter((item) => item.userId !== account);
+      let sender = members && members.filter((item) => item.userId !== account);
       if (sender.length == 1) {
         senderName = sender[0].userId;
       } else if (sender.length > 1) {
