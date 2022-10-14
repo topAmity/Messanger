@@ -23,7 +23,7 @@ export const MyChat = () => {
   const [search, setSearch] = useState(false);
   const [recentChat, setRecentChat] = useState([]);
   const [channelList, setChannelList] = useState([]);
-  console.log("recentChat: ", recentChat);
+
   const { search_result, loading, error } = useSelector(
     (store) => store.search
   );
@@ -32,7 +32,7 @@ export const MyChat = () => {
   );
   const SEARCH_RESULT = "SEARCH_RESULT";
   const searchResult = (payload) => ({ type: SEARCH_RESULT, payload });
-  console.log("search result!!!!", search_result);
+
   const { user, token } = useSelector((store) => store.user);
   const { userId } = useSelector((store) => store.user);
   const { chatting } = useSelector((store) => store.chatting);
@@ -60,7 +60,7 @@ export const MyChat = () => {
   };
   function onClickSearch() {
     // queryAllUser(keyword);
-    console.log(keyword);
+
     dispatch(makeSearchApi(keyword));
   }
 
@@ -74,10 +74,7 @@ export const MyChat = () => {
   }, []);
 
   function queryRecentChat() {
-    console.log("=======user=======", userId);
-
     let channels;
-    console.log("channels: pass this===== ", channels);
 
     const liveCollection = ChannelRepository.queryChannels({
       types: [ChannelType.Conversation],
@@ -88,8 +85,6 @@ export const MyChat = () => {
 
     liveCollection.on("dataUpdated", (models) => {
       channels = models;
-      console.log("=====channels22:===== ", channels);
-      console.log("account", userId.userId);
 
       setChannelList(models);
     });
@@ -104,7 +99,7 @@ export const MyChat = () => {
         channelId: model.channelId,
         memberships: [MemberFilter.Member],
       });
-      console.log("liveCollection: ", liveCollection.models);
+
       members = liveCollection.models;
 
       let sender = members && members.filter((item) => item.userId !== account);
@@ -122,7 +117,6 @@ export const MyChat = () => {
         name: senderName,
       });
       setRecentChat(resultArr);
-      console.log("resultArr: ", resultArr);
     });
     //   let sender;
     //   liveCollection.on("dataUpdated", (newModels) => {
@@ -345,8 +339,7 @@ export const SearchUserComp = ({
   }
   const handleSubmitForAcceChat = () => {
     // dispatch(accessChat(_id, token, recent_chat));
-    console.log("_id: ", _id);
-    console.log("storeData: ", storeUserData.userId.userId);
+
     const userId = storeUserData.userId.userId;
     // setSearch(false);
     const liveChannel = ChannelRepository.createChannel({

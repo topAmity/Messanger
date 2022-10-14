@@ -42,7 +42,6 @@ export const RegisterComp = () => {
         displayName: amityUser.displayName,
       }); // Add your own userId and displayName
       client.on("connectionStatusChanged", ({ newValue }) => {
-        console.log("newValue: ", newValue);
         if (newValue === ConnectionStatus.Connected) {
           console.log("connected to asc " + amityUser.displayName);
           registerUser(
@@ -64,23 +63,9 @@ export const RegisterComp = () => {
     // setRegData({ ...regData, [name]: value });
     setAmityUser({ ...amityUser, [name]: value });
   };
-  // const handleInputFile = (e) => {
-  //   const file = e.target.files[0];
 
-  //   const reader = new FileReader();
-  //   reader.onloadend = () => {
-  //     dispatch(uploadPic(reader.result));
-  //     // setPic(reader.result);
-  //   };
-  //   reader.readAsDataURL(file);
-  // };
   const handleSubmit = () => {
-    // const url = "";
     login();
-
-    // if (onConnected) {
-    //   return <Navigate to={"/"} />;
-    // }
   };
   function registerUser(userId, displayName, email) {
     axios
@@ -104,12 +89,6 @@ export const RegisterComp = () => {
     }
   }, [onConnected]);
 
-  //   if (user.pic) regData["pic"] = user.pic;
-  // dispatch(authRegister(url, regData));
-  // };
-  // if (user._id) {
-  //   return <Navigate to={"/"} />;
-  // }
   return (
     <div className="auth-cont">
       <div>

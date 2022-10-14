@@ -188,12 +188,14 @@ body {
 }
 .live-chat {
   /* border: 2px solid red; */
-  padding: 20px;
+
+
+  /* padding: 10px; */
   max-height: 77%;
   height: 77%;
   box-sizing: border-box;
-  overflow-y: hidden;
-  overflow: scroll;
+  /* overflow-y: hidden; */
+  overflow: auto;
 }
 .live-chat::-webkit-scrollbar {
   width: 10px;
@@ -240,12 +242,16 @@ body {
   flex-direction: row-reverse;
   align-items: center;
   gap: 10px;
+  margin: 5px;
+
 }
 .left-avt {
   /* border: 2px solid black; */
   display: flex;
   align-items: center;
   gap: 10px;
+  margin: 5px;
+
 }
 .left-msg {
   background-color: #27b48c;

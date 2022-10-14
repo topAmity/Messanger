@@ -4,7 +4,7 @@ import { Navigate, useNavigate } from "react-router-dom";
 import { ChattingPage } from "./ChattingPage";
 import { MyChat } from "./MyChat";
 import SideNavbar from "./SideNavbar";
-import { PostRepository, UserRepository } from "@amityco/js-sdk";
+import { UserRepository } from "@amityco/js-sdk";
 import React, { useEffect, useState } from "react";
 
 export const HomeComp = () => {
@@ -13,26 +13,7 @@ export const HomeComp = () => {
   const { chatting } = useSelector((store) => store.chatting);
   console.log("chatting: ", chatting);
   const navigate = useNavigate();
-  // useEffect(() => {
-  //   queryRecentChat();
-  // }, []);
 
-  // function queryRecentChat() {
-  //   let channels;
-  //   console.log("channels: pass this===== ", channels);
-
-  //   const liveCollection = ChannelRepository.queryChannels({
-  //     types: [ChannelType.Conversation],
-  //     filter: ChannelFilter.Member,
-  //     isDeleted: false,
-  //     sortBy: ChannelSortingMethod.LastCreated,
-  //   });
-
-  //   liveCollection.on("dataUpdated", (models) => {
-  //     channels = models;
-  //     console.log("=====channels:===== ", channels);
-  //   });
-  // }
   useEffect(() => {
     if (amityUser?.userId.userId.length == 0) {
       navigate("/register");
@@ -43,7 +24,7 @@ export const HomeComp = () => {
     <div className="home-cont">
       <SideNavbar />
       <MyChat />
-      {console.log("====user====", amityUser)}
+
       {chatting._id ? (
         <ChattingPage />
       ) : (
@@ -57,8 +38,6 @@ export const HomeComp = () => {
 };
 
 const MessageStarter = ({ pic, name }) => {
-  console.log("pic: ", pic);
-  console.log("name: ", name);
   return (
     <div className="chattingpage start-msg">
       <div>

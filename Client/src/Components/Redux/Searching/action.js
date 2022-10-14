@@ -27,7 +27,6 @@ async function queryAllUser(keyword) {
   return resultArr;
 }
 export const makeSearchApi = (search) => async (dispatch) => {
-  console.log("search: ", search);
   searhcLoding(true);
   const user = JSON.parse(localStorage.getItem("userInfo")) || {};
   const url = `https://messenger-clo.herokuapp.com/auth?search=${search}`;
