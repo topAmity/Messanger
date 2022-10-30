@@ -4,9 +4,13 @@ import { Navigate, useNavigate } from "react-router-dom";
 import { ChattingPage } from "./ChattingPage";
 import { MyChat } from "./MyChat";
 import SideNavbar from "./SideNavbar";
-import { UserRepository } from "@amityco/js-sdk";
+import {
+  UserRepository,
+  PostSortingMethod,
+  PostRepository,
+} from "@amityco/js-sdk";
 import React, { useEffect, useState } from "react";
-
+import "./Home.css";
 export const HomeComp = () => {
   const { user, loading, error } = useSelector((store) => store.user);
   const amityUser = useSelector((store) => store.user);
@@ -22,7 +26,7 @@ export const HomeComp = () => {
 
   return (
     <div className="home-cont">
-      <SideNavbar />
+      <SideNavbar className="side-bar" />
       <MyChat />
 
       {chatting._id ? (

@@ -22,6 +22,7 @@ import axios from "axios";
 export const MyChat = () => {
   const [search, setSearch] = useState(false);
   const [recentChat, setRecentChat] = useState([]);
+  console.log("recentChat: ", recentChat);
   const [channelList, setChannelList] = useState([]);
 
   const { search_result, loading, error } = useSelector(
@@ -342,6 +343,7 @@ export const SearchUserComp = ({
 
     const userId = storeUserData.userId.userId;
     // setSearch(false);
+    console.log("userIdArr", [userId, _id, "iphone14"]);
     const liveChannel = ChannelRepository.createChannel({
       type: ChannelType.Conversation,
       userIds: [userId, _id],
