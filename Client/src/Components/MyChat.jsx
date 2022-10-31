@@ -390,7 +390,15 @@ export const SearchUserComp = ({
   return (
     <div onClick={handleSubmitForAcceChat} className="user">
       <div className="history-cont">
-        <div>{<Avatar src={pic} />}</div>
+        <div>
+          {
+            <Avatar
+              src={
+                " https://api.amity.co/api/v3/files/244fa70bf34c4c6ab86860d9ce53c475/download"
+              }
+            />
+          }
+        </div>
         <div>
           <p className="name">{name}</p>
           {/* <p className="chat">Email: {email}</p> */}

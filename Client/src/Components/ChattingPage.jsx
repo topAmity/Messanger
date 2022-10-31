@@ -242,6 +242,7 @@ function InputContWithEmog({ id, token, socket, onSendChat }) {
           placeholder="Type a message"
         />
       </div>
+
       <ColorButton
         onClick={handleChatClick}
         variant="contained"
