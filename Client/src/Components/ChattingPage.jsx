@@ -255,7 +255,7 @@ const ChatWrap = styled.div`
   box-shadow: 0 2px 4px rgb(15 34 58 / 12%);
   height: 100vh;
   /* Adapt the colors based on primary prop */
-  @media only screen and (max-width: 480px) {
+  @media only screen and (max-width: 600px) {
     width: ${(props) => `${props.width}px`};
   */
   }

@@ -406,7 +406,7 @@ const ChatWrap = styled.div`
 
   background-color: #f5f7fb;
   /* Adapt the colors based on primary prop */
-  @media only screen and (max-width: 480px) {
+  @media only screen and (max-width: 600px) {
     width: ${(props) => `${props.width}px`};
   */
   }

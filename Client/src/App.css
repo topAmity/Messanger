@@ -50,7 +50,7 @@ body {
 
   background-color: #f5f7fb;
 }
-@media only screen and (max-width: 480px) {
+@media only screen and (max-width: 600px) {
   .mychat-cont {
     width: 100%;
   }
@@ -196,8 +196,8 @@ body {
   /* border: 2px solid red; */
 
   /* padding: 10px; */
-  max-height: 77%;
-  height: 77%;
+  max-height: 75%;
+  height: 75%;
   box-sizing: border-box;
   /* overflow-y: hidden; */
   overflow: auto;
@@ -215,6 +215,7 @@ body {
   display: flex;
   border-top: 1px solid #f0eff5;
   align-items: center;
+  margin-left: 10px;
 }
 .react-input-emoji--container {
   border-radius: 0px !important;
