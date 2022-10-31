@@ -4,6 +4,7 @@ body {
   background-size: cover;
   box-sizing: border-box;
 }
+
 /* side nav bar */
 .side-nav {
   min-width: 70px;
@@ -45,9 +46,14 @@ body {
 .mychat-cont {
   color: #ffffff;
   width: 26%;
-  height: 100vh;
-  min-width: 270px;
+  height: 100%;
+
   background-color: #f5f7fb;
+}
+@media only screen and (max-width: 480px) {
+  .mychat-cont {
+    width: 100%;
+  }
 }
 .search-cont {
   display: flex;
@@ -157,7 +163,7 @@ body {
 }
 .chattingpage {
   background-color: white;
-  width: 70%;
+  width: 100%;
   box-shadow: 0 2px 4px rgb(15 34 58 / 12%);
   height: 100vh;
 }
@@ -286,6 +292,7 @@ body {
 .start-msg p {
   color: #7a7f9a;
   margin: 0px;
+  margin-bottom: 50px;
 }
 .group-people-cont {
   display: grid;

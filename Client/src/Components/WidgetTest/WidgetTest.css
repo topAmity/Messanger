@@ -1,0 +1,9 @@
+
+.frame{
+    margin: 0 auto;
+    margin-top: 200px;
+    background: rgb(178, 255, 205);
+    padding: 50px;
+    border-radius: 25px;
+    border: none;
+}

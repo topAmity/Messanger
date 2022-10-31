@@ -13,7 +13,7 @@ export default function SideNavbar() {
   const { user, loading, error } = useSelector((store) => store.user);
 
   return (
-    <div className="side-nav">
+    <div className="side-nav display-none">
       <div>
         <Avatar src={user.pic} />
       </div>

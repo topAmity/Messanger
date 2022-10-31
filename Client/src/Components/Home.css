@@ -1,0 +1,16 @@
+.chat-page-wrap {
+  width: 100%;
+  background: white;
+}
+.chat-icon {
+  filter: grayscale(100%);
+  float: right;
+  padding: 5px;
+  cursor: pointer;
+}
+.chat-page-small {
+  width: 100vh;
+}
+.display-none {
+  display: none;
+}
