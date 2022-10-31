@@ -1,16 +1,18 @@
-import { useState } from "react";
+import { StrictMode } from "react";
 import "./App.css";
-import { AllRoutes } from "./Components/AllRoutes";
 import { FloatingChatBtn } from "./Components/ChatButton/";
 
 function App() {
-  const [count, setCount] = useState(0);
-  const [isOpen, setIsOpen] = useState(false);
-
   return (
-    <>
-      <FloatingChatBtn />
-    </>
+    <StrictMode>
+      <FloatingChatBtn
+        apiKey={"b3babb0b3a89f4341d31dc1a01091edcd70f8de7b23d697f"}
+        authToken={""}
+        userId={"Farrari"}
+        displayName={"Farrari"}
+        email={"naphat.swd@gmail.com"}
+      />
+    </StrictMode>
   );
 }
 

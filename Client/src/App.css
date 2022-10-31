@@ -320,10 +320,28 @@ svg {
   cursor: pointer;
 }
 
-.floating-chat-icon{
+.floating-chat-icon {
   border-radius: 45pt;
   padding: 10px;
   max-width: 45pt;
   max-height: 45pt;
   display: inline;
+}
+
+.floating-chatframe {
+  position: fixed;
+  right: 18pt;
+  z-index: 10000000;
+  width: 370px;
+  min-height: 250px !important;
+  max-height: 1000px !important;
+  height: 80%;
+  border-radius: 15px;
+  box-shadow: rgb(0 0 0 / 15%) 0 3pt 12pt;
+  display: none;
+  max-width: 88vw;
+  overflow: hidden;
+  background: #fff;
+  display: block;
+  bottom: 100px;
 }
