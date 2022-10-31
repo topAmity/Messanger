@@ -13,7 +13,7 @@ import { fetchCurrentMessages, sendMessageApi } from "./Redux/Chatting/action";
 import { sendMessage } from "./Redux/Chatting/action";
 import { addUnseenmsg } from "./Redux/Notification/action";
 import { MessageRepository } from "@amityco/js-sdk";
-
+import { MdOutlineArrowBackIos } from "react-icons/md";
 const SERVER_POINT = "https://messenger-clo.herokuapp.com";
 var socket, currentChattingWith;
 
@@ -110,19 +110,35 @@ export const ChattingPage = ({ onClickStartChat }) => {
     // dispatch(searchResult(recentChat));
     getWindowDimensions();
   }, []);
+  function goBack() {
+    const SELECT_CHAT = "SELECT_CHAT";
+    const selectChat = (payload) => ({ type: SELECT_CHAT, payload });
+    onClickStartChat && onClickStartChat(true);
+    dispatch(
+      selectChat({
+        _id: "",
+      })
+    );
+  }
   return (
     <ChatWrap width={width}>
       {/* <div className="chattingpage"> */}
       <div className="top-header">
         <div className="user-header">
+          <MdOutlineArrowBackIos
+            style={{ marginRight: "10px", cursor: "pointer" }}
+            onClick={() => goBack()}
+            on
+            color="black"
+          />
           <Avatar src={isGroupChat ? "" : pic} />
           <p className="user-name">{isGroupChat ? chatName : name}</p>
         </div>
         <div>
           <div className="user-fet">
             <SearchIcon />
-            <CallIcon />
-            <VideoCallIcon />
+            {/* <CallIcon />
+            <VideoCallIcon /> */}
             <MoreHorizIcon />
           </div>
         </div>

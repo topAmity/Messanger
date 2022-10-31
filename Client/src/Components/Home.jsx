@@ -42,11 +42,12 @@ export const HomeComp = () => {
         {chatting._id ? (
           <ChattingPage />
         ) : (
-          <MessageStarter
-            pic={user.pic}
-            name={amityUser.userId && amityUser.userId.displayName}
-            onClickAddChat={onClickAddChat}
-          />
+          // <MessageStarter
+          //   pic={user.pic}
+          //   name={amityUser.userId && amityUser.userId.displayName}
+          //   onClickAddChat={onClickAddChat}
+          // />
+          <MyChat onClickStartChat={onClickAddChat} />
         )}
       </div>
     </div>
