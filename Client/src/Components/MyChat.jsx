@@ -18,8 +18,9 @@ import {
   MemberFilter,
 } from "@amityco/js-sdk";
 import axios from "axios";
-
-export const MyChat = () => {
+import styled from "@emotion/styled";
+import { height } from "@mui/system";
+export const MyChat = ({ onClickStartChat }) => {
   const [search, setSearch] = useState(false);
   const [recentChat, setRecentChat] = useState([]);
   console.log("recentChat: ", recentChat);
@@ -145,14 +146,27 @@ export const MyChat = () => {
   useEffect(() => {
     filterRecentChat();
   }, [channelList]);
-
-  // useEffect(() => {
-  //   // dispatch(searchResult(recentChat));
-  //   console.log("recentChat: ", recentChat);
-  // }, [recentChat]);
+  const [width, setWidth] = useState(0);
+  const [height, setHeight] = useState(0);
+  console.log("width: ", width);
+  function getWindowDimensions() {
+    const { innerWidth: width, innerHeight: height } = window;
+    console.log("width: ", width);
+    setWidth(width);
+    setHeight(height);
+    // return {
+    //   width,
+    //   height
+    // };
+  }
+  useEffect(() => {
+    // dispatch(searchResult(recentChat));
+    getWindowDimensions();
+  }, []);
 
   return (
-    <div className="mychat-cont">
+    <ChatWrap width={width} height={height}>
+      {/* <div className="mychat-cont"> */}
       <div>
         <div className="notification">
           <h2>Chats</h2>
@@ -178,6 +192,7 @@ export const MyChat = () => {
           {search
             ? search_result.map((el) => (
                 <SearchUserComp
+                  onClickStartChat={onClickStartChat}
                   key={el._id}
                   {...el}
                   token={token}
@@ -187,6 +202,7 @@ export const MyChat = () => {
               ))
             : recentChat.map((el, index) => (
                 <SearchUserComp
+                  onClickStartChat={onClickStartChat}
                   key={el._id}
                   {...el}
                   token={token}
@@ -196,7 +212,8 @@ export const MyChat = () => {
               ))}
         </div>
       </div>
-    </div>
+      {/* </div> */}
+    </ChatWrap>
   );
 };
 
@@ -318,6 +335,7 @@ export const SearchUserComp = ({
   token,
   recent_chat,
   setSearch,
+  onClickStartChat,
 }) => {
   const dispatch = useDispatch();
   const storeUserData = useSelector((store) => store.user);
@@ -344,6 +362,7 @@ export const SearchUserComp = ({
     const userId = storeUserData.userId.userId;
     // setSearch(false);
     console.log("userIdArr", [userId, _id, "iphone14"]);
+    onClickStartChat && onClickStartChat(false);
     const liveChannel = ChannelRepository.createChannel({
       type: ChannelType.Conversation,
       userIds: [userId, _id],
@@ -380,3 +399,15 @@ export const SearchUserComp = ({
     </div>
   );
 };
+const ChatWrap = styled.div`
+  color: #ffffff;
+
+  height: 100%;
+
+  background-color: #f5f7fb;
+  /* Adapt the colors based on primary prop */
+  @media only screen and (max-width: 480px) {
+    width: ${(props) => `${props.width}px`};
+  */
+  }
+`;

@@ -5,8 +5,6 @@ body {
   box-sizing: border-box;
 }
 
-
-
 /* side nav bar */
 .side-nav {
   min-width: 70px;
@@ -48,9 +46,14 @@ body {
 .mychat-cont {
   color: #ffffff;
   width: 26%;
-  height: 100vh;
-  min-width: 270px;
+  height: 100%;
+
   background-color: #f5f7fb;
+}
+@media only screen and (max-width: 480px) {
+  .mychat-cont {
+    width: 100%;
+  }
 }
 .search-cont {
   display: flex;
@@ -192,7 +195,6 @@ body {
 .live-chat {
   /* border: 2px solid red; */
 
-
   /* padding: 10px; */
   max-height: 77%;
   height: 77%;
@@ -246,7 +248,6 @@ body {
   align-items: center;
   gap: 10px;
   margin: 5px;
-
 }
 .left-avt {
   /* border: 2px solid black; */
@@ -254,7 +255,6 @@ body {
   align-items: center;
   gap: 10px;
   margin: 5px;
-
 }
 .left-msg {
   background-color: #27b48c;
@@ -292,6 +292,7 @@ body {
 .start-msg p {
   color: #7a7f9a;
   margin: 0px;
+  margin-bottom: 50px;
 }
 .group-people-cont {
   display: grid;

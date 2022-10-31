@@ -10,6 +10,7 @@ import AmityClient, { ConnectionStatus, ApiEndpoint } from "@amityco/js-sdk";
 import axios from "axios";
 import { useSearchParams } from "react-router-dom";
 import ReactLoading from "react-loading";
+
 export const RegisterComp = () => {
   const [searchParams] = useSearchParams();
   const [apiKey] = useState(searchParams.get("apiKey"));

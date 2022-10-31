@@ -17,7 +17,7 @@ import { MessageRepository } from "@amityco/js-sdk";
 const SERVER_POINT = "https://messenger-clo.herokuapp.com";
 var socket, currentChattingWith;
 
-export const ChattingPage = () => {
+export const ChattingPage = ({ onClickStartChat }) => {
   const { user, token } = useSelector((store) => store.user);
   const { messages } = useSelector((store) => store.chatting);
   const reduxUserStore = useSelector((store) => store.user);
@@ -93,9 +93,26 @@ export const ChattingPage = () => {
 
     queryChatMessage();
   }, [_id]);
-
+  const [width, setWidth] = useState(0);
+  const [height, setHeight] = useState(0);
+  console.log("width: ", width);
+  function getWindowDimensions() {
+    const { innerWidth: width, innerHeight: height } = window;
+    console.log("width: ", width);
+    setWidth(width);
+    setHeight(height);
+    // return {
+    //   width,
+    //   height
+    // };
+  }
+  useEffect(() => {
+    // dispatch(searchResult(recentChat));
+    getWindowDimensions();
+  }, []);
   return (
-    <div className="chattingpage">
+    <ChatWrap width={width}>
+      {/* <div className="chattingpage"> */}
       <div className="top-header">
         <div className="user-header">
           <Avatar src={isGroupChat ? "" : pic} />
@@ -148,7 +165,8 @@ export const ChattingPage = () => {
           onSendChat={scrollToBottom}
         />
       </div>
-    </div>
+      {/* </div> */}
+    </ChatWrap>
   );
 };
 const ColorButton = styled(Button)(() => ({
@@ -216,3 +234,13 @@ function InputContWithEmog({ id, token, socket, onSendChat }) {
     </>
   );
 }
+const ChatWrap = styled.div`
+  background-color: white;
+  box-shadow: 0 2px 4px rgb(15 34 58 / 12%);
+  height: 100vh;
+  /* Adapt the colors based on primary prop */
+  @media only screen and (max-width: 480px) {
+    width: ${(props) => `${props.width}px`};
+  */
+  }
+`;
