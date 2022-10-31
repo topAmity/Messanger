@@ -13,7 +13,7 @@ import { fetchCurrentMessages, sendMessageApi } from "./Redux/Chatting/action";
 import { sendMessage } from "./Redux/Chatting/action";
 import { addUnseenmsg } from "./Redux/Notification/action";
 import { MessageRepository } from "@amityco/js-sdk";
-
+import { MdOutlineArrowBackIos } from "react-icons/md";
 const SERVER_POINT = "https://messenger-clo.herokuapp.com";
 var socket, currentChattingWith;
 
@@ -45,10 +45,6 @@ export const ChattingPage = ({ onClickStartChat }) => {
   } = useSelector((store) => store.chatting);
   const scrolldiv = createRef();
   const dispatch = useDispatch();
-
-  // useEffect(() => {
-  //   scrollToBottom();
-  // }, [messages]);
 
   function queryChatMessage() {
     const liveCollection = MessageRepository.queryMessages({ channelId: _id });
@@ -96,6 +92,7 @@ export const ChattingPage = ({ onClickStartChat }) => {
   const [width, setWidth] = useState(0);
   const [height, setHeight] = useState(0);
   console.log("width: ", width);
+
   function getWindowDimensions() {
     const { innerWidth: width, innerHeight: height } = window;
     console.log("width: ", width);
@@ -110,11 +107,27 @@ export const ChattingPage = ({ onClickStartChat }) => {
     // dispatch(searchResult(recentChat));
     getWindowDimensions();
   }, []);
+  function goBack() {
+    const SELECT_CHAT = "SELECT_CHAT";
+    const selectChat = (payload) => ({ type: SELECT_CHAT, payload });
+    onClickStartChat && onClickStartChat(true);
+    dispatch(
+      selectChat({
+        _id: "",
+      })
+    );
+  }
   return (
     <ChatWrap width={width}>
       {/* <div className="chattingpage"> */}
       <div className="top-header">
         <div className="user-header">
+          <MdOutlineArrowBackIos
+            style={{ marginRight: "10px", cursor: "pointer" }}
+            onClick={() => goBack()}
+            on
+            color="black"
+          />
           <Avatar src={isGroupChat ? "" : pic} />
           <p className="user-name">{isGroupChat ? chatName : name}</p>
         </div>

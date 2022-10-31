@@ -21,7 +21,7 @@ export const FloatingChatBtn = ({
     userId: "",
     email: "",
   });
-
+  console.log("userId====", amityUser);
   useEffect(() => {
     if (apiKey && userId && displayName)
       return () => {
@@ -30,6 +30,13 @@ export const FloatingChatBtn = ({
           userId: userId,
           email: email,
         });
+        dispatch(
+          authUser({
+            displayName: displayName,
+            userId: userId,
+            email: email,
+          })
+        );
         login();
       };
   }, []);
@@ -57,7 +64,6 @@ export const FloatingChatBtn = ({
       console.log("client: ", client);
     }
   };
-
   const registerUser = (userId, displayName, email) => {
     axios
       .post("https://power-school-demo.herokuapp.com/v1/users", {
@@ -66,15 +72,14 @@ export const FloatingChatBtn = ({
         email: email,
       })
       .then(function (response) {
-        console.log(response);
-        dispatch(authUser(amityUser));
+        console.log("response: ", response);
+
         setIsReady(true);
       })
       .catch(function (error) {
         console.log(error);
       });
   };
-
   return (
     <div>
       {isOpen & isReady && (

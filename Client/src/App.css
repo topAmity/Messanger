@@ -40,9 +40,9 @@ body {
   font-size: 1.7rem;
 }
 
-.home-cont {
-  display: flex;
-}
+/* .home-cont {
+
+} */
 .mychat-cont {
   color: #ffffff;
   width: 26%;
@@ -197,7 +197,8 @@ body {
 
   /* padding: 10px; */
   max-height: 77%;
-  height: 77%;
+  max-height: 760px;
+  height: 63%;
   box-sizing: border-box;
   /* overflow-y: hidden; */
   overflow: auto;
@@ -216,6 +217,8 @@ body {
   border-top: 1px solid #f0eff5;
   align-items: center;
   padding-top: 15px;
+  position: relative;
+  padding-left: 10px;
 }
 .react-input-emoji--container {
   border-radius: 0px !important;
@@ -339,13 +342,14 @@ svg {
   position: fixed;
   right: 18pt;
   z-index: 10000000;
-  width: 370px;
+  width: 380px;
   min-height: 250px !important;
   max-height: 1000px !important;
-  height: 80%;
+  /* height: 900px; */
+  height: 80vh;
   border-radius: 15px;
   box-shadow: rgb(0 0 0 / 15%) 0 3pt 12pt;
-  display: none;
+  /* display: none; */
   max-width: 88vw;
   overflow: hidden;
   background: #fff;

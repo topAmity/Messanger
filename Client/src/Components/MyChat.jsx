@@ -19,7 +19,9 @@ import {
 } from "@amityco/js-sdk";
 import axios from "axios";
 import styled from "@emotion/styled";
+import { MdOutlineArrowBackIos } from "react-icons/md";
 import { height } from "@mui/system";
+
 export const MyChat = ({ onClickStartChat }) => {
   const [search, setSearch] = useState(false);
   const [recentChat, setRecentChat] = useState([]);
@@ -37,6 +39,7 @@ export const MyChat = ({ onClickStartChat }) => {
 
   const { user, token } = useSelector((store) => store.user);
   const { userId } = useSelector((store) => store.user);
+  console.log("userId: ", userId);
   const { chatting } = useSelector((store) => store.chatting);
   const { notification, unseenmsg } = useSelector(
     (store) => store.notification
@@ -120,28 +123,6 @@ export const MyChat = ({ onClickStartChat }) => {
       });
       setRecentChat(resultArr);
     });
-    //   let sender;
-    //   liveCollection.on("dataUpdated", (newModels) => {
-    //     members = newModels;
-
-    //     sender = members.filter((item) => item.userId !== account);
-
-    //     if (sender.length == 1) {
-    //       senderName = sender[0].userId;
-    //     } else if (sender.length > 1) {
-    //       let userIdArr = sender.map((item) => item.userId);
-    //       let chatName = userIdArr.join(",");
-    //       senderName = chatName;
-    //     } else {
-    //       senderName = "Empty Chat";
-    //     }
-
-    //     resultArr.push({
-    //       _id: senderName,
-    //       name: senderName,
-    //     });
-    //     setRecentChat(resultArr);
-    //   });
   }
   useEffect(() => {
     filterRecentChat();
@@ -164,11 +145,20 @@ export const MyChat = ({ onClickStartChat }) => {
     getWindowDimensions();
   }, []);
 
+  function goBack() {
+    onClickStartChat && onClickStartChat(false);
+  }
   return (
     <ChatWrap width={width} height={height}>
       {/* <div className="mychat-cont"> */}
       <div>
         <div className="notification">
+          {/* <MdOutlineArrowBackIos
+            style={{ cursor: "pointer" }}
+            onClick={() => goBack()}
+            on
+            color="black"
+          /> */}
           <h2>Chats</h2>
           {/* <NotificationsIcon /> */}
           <Badge badgeContent={notification} color="error">
@@ -362,7 +352,7 @@ export const SearchUserComp = ({
     const userId = storeUserData.userId.userId;
     // setSearch(false);
     console.log("userIdArr", [userId, _id, "iphone14"]);
-    onClickStartChat && onClickStartChat(false);
+
     const liveChannel = ChannelRepository.createChannel({
       type: ChannelType.Conversation,
       userIds: [userId, _id],
@@ -384,6 +374,7 @@ export const SearchUserComp = ({
         })
       );
       createChannel(data.channelId, userId, _id);
+      onClickStartChat && onClickStartChat(false);
     });
   };
 
@@ -406,8 +397,8 @@ const ChatWrap = styled.div`
 
   background-color: #f5f7fb;
   /* Adapt the colors based on primary prop */
-  @media only screen and (max-width: 480px) {
+  /* @media only screen and (max-width: 480px) {
     width: ${(props) => `${props.width}px`};
   */
-  }
+  } */
 `;
