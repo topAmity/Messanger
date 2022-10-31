@@ -6,11 +6,11 @@ function App() {
   return (
     <StrictMode>
       <FloatingChatBtn
-        apiKey={"b3babb0b3a89f4341d31dc1a01091edcd70f8de7b23d697f"}
+        apiKey={""}
         authToken={""}
-        userId={"Farrari"}
-        displayName={"Farrari"}
-        email={"naphat.swd@gmail.com"}
+        userId={""}
+        displayName={""}
+        email={""}
       />
     </StrictMode>
   );
