@@ -1,5 +1,6 @@
 import "./auth.css";
 import avatar from "./amity-no-bg.png";
+import powerSchool from "./PS.png";
 import React, { useEffect, useState } from "react";
 import { styled } from "@mui/material/styles";
 import Button from "@mui/material/Button";
@@ -155,6 +156,7 @@ export const RegisterComp = () => {
                 {/* <label htmlFor="file" id="uploadBtn"> */}
                 {/* <img id="photo" src={user.pic ? user.pic : avatar} /> */}
                 <img id="photo" src={avatar} />
+                <img id="photo" src={powerSchool} />
                 {/* </label> */}
               </div>
               {/* <p className="profile-text">Choose Profile</p> */}

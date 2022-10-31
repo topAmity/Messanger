@@ -249,14 +249,14 @@ body {
   display: flex;
   flex-direction: row-reverse;
   align-items: center;
-  gap: 10px;
-  margin: 5px;
+  /* gap: 10px; */
+  /* margin: 5px; */
 }
 .left-avt {
   /* border: 2px solid black; */
   display: flex;
   align-items: center;
-  gap: 10px;
+  /* gap: 10px; */
   margin: 5px;
 }
 .left-msg {
@@ -342,7 +342,7 @@ svg {
   position: fixed;
   right: 18pt;
   z-index: 10000000;
-  width: 380px;
+  width: 440px;
   min-height: 250px !important;
   max-height: 1000px !important;
   /* height: 900px; */
@@ -355,4 +355,7 @@ svg {
   background: #fff;
   display: block;
   bottom: 100px;
+}
+.emoji-mart {
+  margin-left: 0px;
 }
