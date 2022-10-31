@@ -134,8 +134,8 @@ export const ChattingPage = ({ onClickStartChat }) => {
         <div>
           <div className="user-fet">
             <SearchIcon />
-            <CallIcon />
-            <VideoCallIcon />
+            {/* <CallIcon />
+            <VideoCallIcon /> */}
             <MoreHorizIcon />
           </div>
         </div>
