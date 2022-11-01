@@ -26,8 +26,8 @@ export const MyChat = ({ onClickStartChat }) => {
   const [recentChat, setRecentChat] = useState([]);
   const [recentFilterChat, setRecentFilterChat] = useState([]);
   const [searchFilterChat, setSearchFilterChat] = useState([]);
-  // console.log("recentFilterChat: ", recentFilterChat);
-  // console.log("recentChat: ", recentChat);
+  console.log("recentFilterChat: ", recentFilterChat);
+  console.log("recentChat: ", recentChat);
   const [channelList, setChannelList] = useState([]);
   const [role, setRole] = useState("");
   const [permittedRole, setPermittedRole] = useState([]);
@@ -81,30 +81,20 @@ export const MyChat = ({ onClickStartChat }) => {
   useEffect(() => {
     queryRecentChat();
   }, []);
-  // useEffect(() => {
-  //   if (recentChat.length > 0) {
-  //     createPermissionUser();
-  //   }
-  // }, [recentChat]);
+  useEffect(() => {
+    createPermissionUser();
+  }, [recentChat]);
 
-  async function createPermissionUser(arr) {
-    const userIdArr = arr.map((item) => item._id);
-    console.log("userIdArr: recenttt ", userIdArr);
-
+  async function createPermissionUser() {
+    const userIdArr = recentChat.map((item) => item._id);
     const userWithRole = await getUserRole(userIdArr);
-    console.log("userWithRole: recent", userWithRole);
-    console.log("permittedRole: recent ", permittedRole);
-    const permittedUser =
-      permittedRole &&
-      userWithRole.filter((item) => {
-        console.log("item: ====checl ", permittedRole);
-        console.log('item["roles"][0]: ', item["roles"][0]);
-        console.log(permittedRole.includes(item["roles"][0]));
 
-        return permittedRole.includes(item["roles"][0]);
-      });
-    console.log("permittedUser: recent", permittedUser);
+    console.log("userWithRole: ", userWithRole);
 
+    const permittedUser = userWithRole.filter((item) =>
+      permittedRole.includes(item.roles[0])
+    );
+    console.log("permittedUser: ", permittedUser);
     setRecentFilterChat(permittedUser);
   }
   function queryRecentChat() {
@@ -154,7 +144,6 @@ export const MyChat = ({ onClickStartChat }) => {
         roles: sender[0]?.roles[0],
       });
       setRecentChat(resultArr);
-      createPermissionUser(resultArr);
     });
   }
   useEffect(() => {
@@ -173,70 +162,60 @@ export const MyChat = ({ onClickStartChat }) => {
     //   height
     // };
   }
-  async function getUser() {
+  function getUser() {
     const liveObject = UserRepository.getUser(userId.userId);
-    liveObject.on("dataUpdated", async (user) => {
-      // console.log("user: ", user);
-      // console.log("user: ", user?.roles[0]);
+    liveObject.on("dataUpdated", (user) => {
+      console.log("user: ", user);
+      console.log("user: ", user?.roles[0]);
       setRole(user?.roles[0]);
-      const res = getRolePermission(user?.roles[0]);
-      setPermittedRole(res);
-      console.log("res: ", res);
+      getRolePermission(user?.roles[0]);
       // user is successfully fetched
     });
   }
-  async function getRolePermission(role) {
-    // console.log("role: ", role);
-    return new Promise(async (resolve, reject) => {
-      await axios
-
-        .post("https://power-school-demo.herokuapp.com/v1/roles", {
-          role: role,
-        })
-        .then(function (response) {
-          console.log("role========", response.data);
-          resolve(response.data);
-        })
-        .catch(function (error) {
-          // console.log(error);
-          reject(error);
-        });
-    });
+  function getRolePermission(role) {
+    console.log("role: ", role);
+    axios
+      .post("https://power-school-demo.herokuapp.com/v1/roles", {
+        role: role,
+      })
+      .then(function (response) {
+        setPermittedRole(response.data);
+        console.log("role========", response.data);
+      })
+      .catch(function (error) {
+        // console.log(error);
+      });
   }
 
   async function getUserRole(role) {
-    return new Promise((resolve, reject) => {
-      let result = [];
-      const filteredArr = role.filter((item) => item !== "Empty Chat");
-      // console.log("filteredArr: ", filteredArr);
-      var config = {
-        method: "get",
-        url: "https://api.sg.amity.co/api/v3/users/list",
-        headers: {
-          Authorization: `Bearer ${userId.token}`,
-        },
-        params: { userIds: filteredArr },
-        paramsSerializer: (params) => {
-          return params
-            .map((keyValuePair) => new URLSearchParams(keyValuePair))
-            .join("&");
-        },
-      };
+    let result = [];
+    const filteredArr = role.filter((item) => item !== "Empty Chat");
+    // console.log("filteredArr: ", filteredArr);
+    var config = {
+      method: "get",
+      url: "https://api.sg.amity.co/api/v3/users/list",
+      headers: {
+        Authorization: `Bearer ${userId.token}`,
+      },
+      params: { userIds: filteredArr },
+      paramsSerializer: (params) => {
+        return params
+          .map((keyValuePair) => new URLSearchParams(keyValuePair))
+          .join("&");
+      },
+    };
 
-      // console.log("config: ", config);
-      axios(config)
-        .then(function (response) {
-          console.log("response=========>", response.data.users);
-          result = response.data.users;
-          return resolve(result);
-        })
-        .catch(function (error) {
-          console.log(error);
-          reject(error);
-        });
+    // console.log("config: ", config);
+    await axios(config)
+      .then(function (response) {
+        console.log("response=========>", response.data.users);
+        result = response.data.users;
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
 
-      // return result;
-    });
+    return result;
   }
   useEffect(() => {
     // dispatch(searchResult(recentChat));
@@ -251,12 +230,12 @@ export const MyChat = ({ onClickStartChat }) => {
     const userIdArrSearch = search_result.map((item) => item._id);
     const userWithRole = await getUserRole(userIdArrSearch);
 
-    // console.log("userWithRole: ", userWithRole);
+    console.log("userWithRole: ", userWithRole);
 
     const permittedUser = userWithRole.filter((item) =>
       permittedRole.includes(item.roles[0])
     );
-    // console.log("userIdArrSearch: ", userIdArrSearch);
+    console.log("userIdArrSearch: ", userIdArrSearch);
     setSearchFilterChat(permittedUser);
   }
 
@@ -437,6 +416,7 @@ export const SearchUserComp = ({
   setSearch,
   onClickStartChat,
   avatarFileId,
+  userId,
 }) => {
   const dispatch = useDispatch();
   const storeUserData = useSelector((store) => store.user);
@@ -460,14 +440,14 @@ export const SearchUserComp = ({
   const handleSubmitForAcceChat = () => {
     // dispatch(accessChat(_id, token, recent_chat));
 
-    const userId = storeUserData.userId.userId;
+    const ownUserId = storeUserData.userId.userId;
     // setSearch(false);
-    console.log("userIdArr", [userId, _id, "iphone14"]);
+    console.log("userIdArr", [ownUserId, userId]);
     onClickStartChat && onClickStartChat(false);
     const liveChannel = ChannelRepository.createChannel({
       type: ChannelType.Conversation,
-      userIds: [userId, _id],
-      displayName: `${userId},${_id}`,
+      userIds: [ownUserId, userId],
+      displayName: `${ownUserId},${userId}`,
     });
     liveChannel.once("dataUpdated", (data) => {
       console.log("channel created", data);
