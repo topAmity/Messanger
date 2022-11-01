@@ -464,7 +464,7 @@ export const SearchUserComp = ({
           chatName: "Mock",
         })
       );
-      createChannel(data.channelId, userId, _id);
+      createChannel(data.channelId, ownUserId, userId);
     });
   };
 
