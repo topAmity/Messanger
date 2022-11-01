@@ -19,13 +19,19 @@ import {
 } from "@amityco/js-sdk";
 import axios from "axios";
 import styled from "@emotion/styled";
-import { height } from "@mui/system";
+import { UserRepository } from "@amityco/js-sdk";
+
 export const MyChat = ({ onClickStartChat }) => {
   const [search, setSearch] = useState(false);
   const [recentChat, setRecentChat] = useState([]);
-  console.log("recentChat: ", recentChat);
+  const [recentFilterChat, setRecentFilterChat] = useState([]);
+  const [searchFilterChat, setSearchFilterChat] = useState([]);
+  // console.log("recentFilterChat: ", recentFilterChat);
+  // console.log("recentChat: ", recentChat);
   const [channelList, setChannelList] = useState([]);
-
+  const [role, setRole] = useState("");
+  const [permittedRole, setPermittedRole] = useState([]);
+  // console.log("role: ", role);
   const { search_result, loading, error } = useSelector(
     (store) => store.search
   );
@@ -37,15 +43,16 @@ export const MyChat = ({ onClickStartChat }) => {
 
   const { user, token } = useSelector((store) => store.user);
   const { userId } = useSelector((store) => store.user);
+  // console.log("userId: ", userId);
   const { chatting } = useSelector((store) => store.chatting);
   const { notification, unseenmsg } = useSelector(
     (store) => store.notification
   );
   const dispatch = useDispatch();
   const [keyword, setKeyword] = useState("");
-  useEffect(() => {
-    if (token) dispatch(makeRecentChatApi(token));
-  }, [user]);
+  // useEffect(() => {
+  //   if (token) dispatch(makeRecentChatApi(token));
+  // }, [user]);
   const ref = useRef();
 
   const handleQuery = (e) => {
@@ -74,7 +81,22 @@ export const MyChat = ({ onClickStartChat }) => {
   useEffect(() => {
     queryRecentChat();
   }, []);
+  useEffect(() => {
+    createPermissionUser();
+  }, [recentChat]);
 
+  async function createPermissionUser() {
+    const userIdArr = recentChat.map((item) => item._id);
+    const userWithRole = await getUserRole(userIdArr);
+
+    console.log("userWithRole: ", userWithRole);
+
+    const permittedUser = userWithRole.filter((item) =>
+      permittedRole.includes(item.roles[0])
+    );
+    console.log("permittedUser: ", permittedUser);
+    setRecentFilterChat(permittedUser);
+  }
   function queryRecentChat() {
     let channels;
 
@@ -105,6 +127,8 @@ export const MyChat = ({ onClickStartChat }) => {
       members = liveCollection.models;
 
       let sender = members && members.filter((item) => item.userId !== account);
+      // console.log("sender: ", sender);
+
       if (sender.length == 1) {
         senderName = sender[0].userId;
       } else if (sender.length > 1) {
@@ -117,41 +141,20 @@ export const MyChat = ({ onClickStartChat }) => {
       resultArr.push({
         _id: senderName,
         name: senderName,
+        roles: sender[0]?.roles[0],
       });
       setRecentChat(resultArr);
     });
-    //   let sender;
-    //   liveCollection.on("dataUpdated", (newModels) => {
-    //     members = newModels;
-
-    //     sender = members.filter((item) => item.userId !== account);
-
-    //     if (sender.length == 1) {
-    //       senderName = sender[0].userId;
-    //     } else if (sender.length > 1) {
-    //       let userIdArr = sender.map((item) => item.userId);
-    //       let chatName = userIdArr.join(",");
-    //       senderName = chatName;
-    //     } else {
-    //       senderName = "Empty Chat";
-    //     }
-
-    //     resultArr.push({
-    //       _id: senderName,
-    //       name: senderName,
-    //     });
-    //     setRecentChat(resultArr);
-    //   });
   }
   useEffect(() => {
     filterRecentChat();
   }, [channelList]);
   const [width, setWidth] = useState(0);
   const [height, setHeight] = useState(0);
-  console.log("width: ", width);
+
   function getWindowDimensions() {
     const { innerWidth: width, innerHeight: height } = window;
-    console.log("width: ", width);
+
     setWidth(width);
     setHeight(height);
     // return {
@@ -159,17 +162,91 @@ export const MyChat = ({ onClickStartChat }) => {
     //   height
     // };
   }
+  function getUser() {
+    const liveObject = UserRepository.getUser(userId.userId);
+    liveObject.on("dataUpdated", (user) => {
+      console.log("user: ", user);
+      console.log("user: ", user?.roles[0]);
+      setRole(user?.roles[0]);
+      getRolePermission(user?.roles[0]);
+      // user is successfully fetched
+    });
+  }
+  function getRolePermission(role) {
+    console.log("role: ", role);
+    axios
+      .post("https://power-school-demo.herokuapp.com/v1/roles", {
+        role: role,
+      })
+      .then(function (response) {
+        setPermittedRole(response.data);
+        console.log("role========", response.data);
+      })
+      .catch(function (error) {
+        // console.log(error);
+      });
+  }
+
+  async function getUserRole(role) {
+    let result = [];
+    const filteredArr = role.filter((item) => item !== "Empty Chat");
+    // console.log("filteredArr: ", filteredArr);
+    var config = {
+      method: "get",
+      url: "https://api.sg.amity.co/api/v3/users/list",
+      headers: {
+        Authorization: `Bearer ${userId.token}`,
+      },
+      params: { userIds: filteredArr },
+      paramsSerializer: (params) => {
+        return params
+          .map((keyValuePair) => new URLSearchParams(keyValuePair))
+          .join("&");
+      },
+    };
+
+    // console.log("config: ", config);
+    await axios(config)
+      .then(function (response) {
+        console.log("response=========>", response.data.users);
+        result = response.data.users;
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+
+    return result;
+  }
   useEffect(() => {
     // dispatch(searchResult(recentChat));
+    // getUserRole();
+    getUser();
     getWindowDimensions();
   }, []);
+  useEffect(() => {
+    searchWithPermission();
+  }, [search_result]);
+  async function searchWithPermission() {
+    const userIdArrSearch = search_result.map((item) => item._id);
+    const userWithRole = await getUserRole(userIdArrSearch);
 
+    console.log("userWithRole: ", userWithRole);
+
+    const permittedUser = userWithRole.filter((item) =>
+      permittedRole.includes(item.roles[0])
+    );
+    console.log("userIdArrSearch: ", userIdArrSearch);
+    setSearchFilterChat(permittedUser);
+  }
+
+  // console.log("search_result: ", search_result);
   return (
     <ChatWrap width={width} height={height}>
       {/* <div className="mychat-cont"> */}
       <div>
         <div className="notification">
-          <h2>Chats</h2>
+          <h2>Chats </h2>
+          <p>role: {role}</p>
           {/* <NotificationsIcon /> */}
           <Badge badgeContent={notification} color="error">
             <Notificationcomp />
@@ -187,10 +264,12 @@ export const MyChat = ({ onClickStartChat }) => {
         </div>
       </div>
       <div className="recent-chat">
-        <p className="Recent">Recent</p>
+        <p className="Recent">
+          {search ? `Search ${searchFilterChat.length} results` : "Recent"}
+        </p>
         <div className="recent-user">
           {search
-            ? search_result.map((el) => (
+            ? searchFilterChat.map((el) => (
                 <SearchUserComp
                   onClickStartChat={onClickStartChat}
                   key={el._id}
@@ -200,7 +279,7 @@ export const MyChat = ({ onClickStartChat }) => {
                   setSearch={setSearch}
                 />
               ))
-            : recentChat.map((el, index) => (
+            : recentFilterChat.map((el, index) => (
                 <SearchUserComp
                   onClickStartChat={onClickStartChat}
                   key={el._id}
@@ -330,12 +409,13 @@ const ChatUserComp = ({
 export const SearchUserComp = ({
   _id,
   email,
-  name,
+  displayName,
   pic,
   token,
   recent_chat,
   setSearch,
   onClickStartChat,
+  avatarFileId,
 }) => {
   const dispatch = useDispatch();
   const storeUserData = useSelector((store) => store.user);
@@ -376,7 +456,7 @@ export const SearchUserComp = ({
           index: 0,
           user: {
             pic: pic,
-            name: name,
+            name: displayName,
             userId: _id,
           },
           _id: data.channelId,
@@ -393,14 +473,12 @@ export const SearchUserComp = ({
         <div>
           {
             <Avatar
-              src={
-                " https://api.amity.co/api/v3/files/244fa70bf34c4c6ab86860d9ce53c475/download"
-              }
+              src={` https://api.amity.co/api/v3/files/${avatarFileId}/download`}
             />
           }
         </div>
         <div>
-          <p className="name">{name}</p>
+          <p className="name">{displayName}</p>
           {/* <p className="chat">Email: {email}</p> */}
         </div>
       </div>

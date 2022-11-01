@@ -90,6 +90,9 @@ body {
   font-family: "Public Sans", sans-serif;
   font-weight: 600;
 }
+p {
+  color: #212121;
+}
 .recent-chat {
   width: 100%;
   margin: auto;
