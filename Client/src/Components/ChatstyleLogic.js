@@ -1,5 +1,5 @@
 export const ChatlogicStyling = (id, userId) => {
-  if (id != userId) {
+  if (id == userId) {
     return "left-msg";
   }
   return "right-msg";

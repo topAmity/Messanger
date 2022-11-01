@@ -43,6 +43,8 @@ export const ChattingPage = ({ onClickStartChat }) => {
       _id,
     },
   } = useSelector((store) => store.chatting);
+  const userStore = useSelector((store) => store.user);
+  console.log("userStore: ", userStore);
   const scrolldiv = createRef();
   const dispatch = useDispatch();
 
@@ -144,21 +146,35 @@ export const ChattingPage = ({ onClickStartChat }) => {
         </div>
       </div>
       <div ref={messagesEndRef} id="chat-scroll" className="live-chat">
+        {console.log("chatMessage: ", chatMessage)}
         {chatMessage.map((el, index) => (
           <div
             key={index}
             className={
-              el.sender._id == el._id ? "rihgtuser-chat" : "leftuser-chat"
+              el._id !== userStore["userId"]["userId"]
+                ? "rihgtuser-chat"
+                : "leftuser-chat"
             }
           >
-            <div className={el.sender._id == el._id ? "right-avt" : "left-avt"}>
+            <div
+              className={
+                el._id !== userStore["userId"]["userId"]
+                  ? "right-avt"
+                  : "left-avt"
+              }
+            >
               <p className="time chat-time">
                 {new Date(el.createdAt).getHours() +
                   ":" +
                   (new Date(el.createdAt).getMinutes() < 10 ? "0" : "") +
                   new Date(el.createdAt).getMinutes()}
               </p>
-              <div className={ChatlogicStyling(el.sender._id, el._id)}>
+              <div
+                className={ChatlogicStyling(
+                  el._id,
+                  userStore["userId"]["userId"]
+                )}
+              >
                 <p>{el.content}</p>
               </div>
 
