@@ -94,11 +94,15 @@ export const MyChat = ({ onClickStartChat }) => {
     const userWithRole = await getUserRole(userIdArr);
     console.log("userWithRole: recent", userWithRole);
     console.log("permittedRole: recent ", permittedRole);
-    const permittedUser = userWithRole.filter((item) => {
-      console.log("item: ", permittedRole.includes(item["roles"][0]));
+    const permittedUser =
+      permittedRole &&
+      userWithRole.filter((item) => {
+        console.log("item: ====checl ", permittedRole);
+        console.log('item["roles"][0]: ', item["roles"][0]);
+        console.log(permittedRole.includes(item["roles"][0]));
 
-      return permittedRole.includes(item["roles"][0]);
-    });
+        return permittedRole.includes(item["roles"][0]);
+      });
     console.log("permittedUser: recent", permittedUser);
 
     setRecentFilterChat(permittedUser);
@@ -175,29 +179,28 @@ export const MyChat = ({ onClickStartChat }) => {
       // console.log("user: ", user);
       // console.log("user: ", user?.roles[0]);
       setRole(user?.roles[0]);
-      const res = await getRolePermission(user?.roles[0]);
+      const res = getRolePermission(user?.roles[0]);
+      setPermittedRole(res);
       console.log("res: ", res);
       // user is successfully fetched
     });
   }
   async function getRolePermission(role) {
     // console.log("role: ", role);
-    new Promise((resolve, reject) => {
-      axios
+    return new Promise(async (resolve, reject) => {
+      await axios
 
         .post("https://power-school-demo.herokuapp.com/v1/roles", {
           role: role,
         })
         .then(function (response) {
           console.log("role========", response.data);
-          return resolve(response.data);
+          resolve(response.data);
         })
         .catch(function (error) {
           // console.log(error);
           reject(error);
         });
-
-      // setPermittedRole(response.data);
     });
   }
 
