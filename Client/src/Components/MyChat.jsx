@@ -26,8 +26,8 @@ export const MyChat = ({ onClickStartChat }) => {
   const [recentChat, setRecentChat] = useState([]);
   const [recentFilterChat, setRecentFilterChat] = useState([]);
   const [searchFilterChat, setSearchFilterChat] = useState([]);
-  console.log("recentFilterChat: ", recentFilterChat);
-  console.log("recentChat: ", recentChat);
+  // console.log("recentFilterChat: ", recentFilterChat);
+  // console.log("recentChat: ", recentChat);
   const [channelList, setChannelList] = useState([]);
   const [role, setRole] = useState("");
   const [permittedRole, setPermittedRole] = useState([]);
@@ -81,20 +81,26 @@ export const MyChat = ({ onClickStartChat }) => {
   useEffect(() => {
     queryRecentChat();
   }, []);
-  useEffect(() => {
-    createPermissionUser();
-  }, [recentChat]);
+  // useEffect(() => {
+  //   if (recentChat.length > 0) {
+  //     createPermissionUser();
+  //   }
+  // }, [recentChat]);
 
-  async function createPermissionUser() {
-    const userIdArr = recentChat.map((item) => item._id);
+  async function createPermissionUser(arr) {
+    const userIdArr = arr.map((item) => item._id);
+    console.log("userIdArr: recenttt ", userIdArr);
+
     const userWithRole = await getUserRole(userIdArr);
+    console.log("userWithRole: recent", userWithRole);
+    console.log("permittedRole: recent ", permittedRole);
+    const permittedUser = userWithRole.filter((item) => {
+      console.log("item: ", permittedRole.includes(item["roles"][0]));
 
-    console.log("userWithRole: ", userWithRole);
+      return permittedRole.includes(item["roles"][0]);
+    });
+    console.log("permittedUser: recent", permittedUser);
 
-    const permittedUser = userWithRole.filter((item) =>
-      permittedRole.includes(item.roles[0])
-    );
-    console.log("permittedUser: ", permittedUser);
     setRecentFilterChat(permittedUser);
   }
   function queryRecentChat() {
@@ -144,6 +150,7 @@ export const MyChat = ({ onClickStartChat }) => {
         roles: sender[0]?.roles[0],
       });
       setRecentChat(resultArr);
+      createPermissionUser(resultArr);
     });
   }
   useEffect(() => {
@@ -162,60 +169,71 @@ export const MyChat = ({ onClickStartChat }) => {
     //   height
     // };
   }
-  function getUser() {
+  async function getUser() {
     const liveObject = UserRepository.getUser(userId.userId);
-    liveObject.on("dataUpdated", (user) => {
-      console.log("user: ", user);
-      console.log("user: ", user?.roles[0]);
+    liveObject.on("dataUpdated", async (user) => {
+      // console.log("user: ", user);
+      // console.log("user: ", user?.roles[0]);
       setRole(user?.roles[0]);
-      getRolePermission(user?.roles[0]);
+      const res = await getRolePermission(user?.roles[0]);
+      console.log("res: ", res);
       // user is successfully fetched
     });
   }
-  function getRolePermission(role) {
-    console.log("role: ", role);
-    axios
-      .post("https://power-school-demo.herokuapp.com/v1/roles", {
-        role: role,
-      })
-      .then(function (response) {
-        setPermittedRole(response.data);
-        console.log("role========", response.data);
-      })
-      .catch(function (error) {
-        // console.log(error);
-      });
+  async function getRolePermission(role) {
+    // console.log("role: ", role);
+    new Promise((resolve, reject) => {
+      axios
+
+        .post("https://power-school-demo.herokuapp.com/v1/roles", {
+          role: role,
+        })
+        .then(function (response) {
+          console.log("role========", response.data);
+          return resolve(response.data);
+        })
+        .catch(function (error) {
+          // console.log(error);
+          reject(error);
+        });
+
+      // setPermittedRole(response.data);
+    });
   }
 
   async function getUserRole(role) {
-    let result = [];
-    const filteredArr = role.filter((item) => item !== "Empty Chat");
-    // console.log("filteredArr: ", filteredArr);
-    var config = {
-      method: "get",
-      url: "https://api.sg.amity.co/api/v3/users/list",
-      headers: {
-        Authorization: `Bearer ${userId.token}`,
-      },
-      params: { userIds: filteredArr },
-      paramsSerializer: (params) => {
-        return params
-          .map((keyValuePair) => new URLSearchParams(keyValuePair))
-          .join("&");
-      },
-    };
+    return new Promise((resolve, reject) => {
+      let result = [];
+      const filteredArr = role.filter((item) => item !== "Empty Chat");
+      // console.log("filteredArr: ", filteredArr);
+      var config = {
+        method: "get",
+        url: "https://api.sg.amity.co/api/v3/users/list",
+        headers: {
+          Authorization: `Bearer ${userId.token}`,
+        },
+        params: { userIds: filteredArr },
+        paramsSerializer: (params) => {
+          return params
+            .map((keyValuePair) => new URLSearchParams(keyValuePair))
+            .join("&");
+        },
+      };
 
-    // console.log("config: ", config);
-    await axios(config)
-      .then(function (response) {
-        console.log("response=========>", response.data.users);
-        result = response.data.users;
-      })
-      .catch(function (error) {
-        console.log(error);
-      });
+      // console.log("config: ", config);
+      axios(config)
+        .then(function (response) {
+          console.log("response=========>", response.data.users);
+          result = response.data.users;
+          return resolve(result);
+        })
+        .catch(function (error) {
+          console.log(error);
+          reject(error);
+        });
 
-    return result;
+      // return result;
+    });
   }
   useEffect(() => {
     // dispatch(searchResult(recentChat));
@@ -230,12 +248,12 @@ export const MyChat = ({ onClickStartChat }) => {
     const userIdArrSearch = search_result.map((item) => item._id);
     const userWithRole = await getUserRole(userIdArrSearch);
 
-    console.log("userWithRole: ", userWithRole);
+    // console.log("userWithRole: ", userWithRole);
 
     const permittedUser = userWithRole.filter((item) =>
       permittedRole.includes(item.roles[0])
     );
-    console.log("userIdArrSearch: ", userIdArrSearch);
+    // console.log("userIdArrSearch: ", userIdArrSearch);
     setSearchFilterChat(permittedUser);
   }
 
