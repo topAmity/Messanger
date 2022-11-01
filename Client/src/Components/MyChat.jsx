@@ -89,13 +89,13 @@ export const MyChat = ({ onClickStartChat }) => {
     const userIdArr = recentChat.map((item) => item._id);
     const userWithRole = await getUserRole(userIdArr);
 
-    console.log("userWithRole: ", userWithRole);
+    // console.log("userWithRole: ", userWithRole);
 
-    const permittedUser = userWithRole.filter((item) =>
-      permittedRole.includes(item.roles[0])
-    );
-    console.log("permittedUser: ", permittedUser);
-    setRecentFilterChat(permittedUser);
+    // const permittedUser = userWithRole.filter((item) =>
+    //   permittedRole.includes(item.roles[0])
+    // );
+    // console.log("permittedUser: ", permittedUser);
+    setRecentFilterChat(userWithRole);
   }
   function queryRecentChat() {
     let channels;
