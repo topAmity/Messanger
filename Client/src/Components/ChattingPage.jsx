@@ -187,11 +187,13 @@ export const ChattingPage = ({ onClickStartChat }) => {
 };
 const ColorButton = styled(Button)(() => ({
   color: "white",
-  fontSize: "20px",
+  fontSize: "16px",
   textTransform: "none",
   padding: "12px",
-  marginRight: "15px",
+  marginRight: "5px",
+
   backgroundColor: "#27b48c",
+  // paddingLeft: "10px",
   "&:hover": {
     backgroundColor: "#0f8e6a",
   },
@@ -241,13 +243,22 @@ function InputContWithEmog({ id, token, socket, onSendChat }) {
           onEnter={handleOnEnter}
           placeholder="Type a message"
         />
+
+        {/* <ColorButton
+          style={{ position: "absolute" }}
+          onClick={handleChatClick}
+          variant="contained"
+          endIcon={<SendIcon />}
+        ></ColorButton> */}
       </div>
 
       <ColorButton
         onClick={handleChatClick}
-        variant="contained"
-        endIcon={<SendIcon />}
-      ></ColorButton>
+        // variant="contained"
+        // endIcon={<SendIcon />}
+      >
+        <SendIcon />
+      </ColorButton>
     </>
   );
 }

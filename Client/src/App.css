@@ -41,7 +41,7 @@ body {
 }
 
 .home-cont {
-  display: flex;
+  /* display: flex; */
 }
 .mychat-cont {
   color: #ffffff;
@@ -215,6 +215,7 @@ body {
   display: flex;
   border-top: 1px solid #f0eff5;
   align-items: center;
+  justify-content: center;
   margin-left: 10px;
 }
 .react-input-emoji--container {
