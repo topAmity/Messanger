@@ -92,24 +92,20 @@ export const MyChat = ({ onClickStartChat }) => {
     console.log("userIdArr: recenttt ", userIdArr);
 
     const userWithRole = await getUserRole(userIdArr);
-    setRecentFilterChat(userWithRole);
     console.log("userWithRole: recent", userWithRole);
     console.log("permittedRole: recent ", permittedRole);
+    const permittedUser =
+      permittedRole &&
+      userWithRole.filter((item) => {
+        console.log("item: ====checl ", permittedRole);
+        console.log('item["roles"][0]: ', item["roles"][0]);
+        console.log(permittedRole.includes(item["roles"][0]));
 
-    // const permittedUser =
-    //   permittedRole &&
-    //   userWithRole.filter((item) => {
-    //     console.log("item: ====checl ", permittedRole);
-    //     console.log('item["roles"][0]: ', item["roles"][0]);
-    //     const tempArr = Promise.all(permittedRole);
-    //     console.log("tempArr: ", tempArr);
-    //     console.log(permittedRole.includes(item["roles"][0]));
+        return permittedRole.includes(item["roles"][0]);
+      });
+    console.log("permittedUser: recent", permittedUser);
 
-    //     return permittedRole.includes(item["roles"][0]);
-    //   });
-    // console.log("permittedUser: recent", permittedUser);
-
-    // setRecentFilterChat(permittedUser);
+    setRecentFilterChat(permittedUser);
   }
   function queryRecentChat() {
     let channels;
