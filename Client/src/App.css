@@ -1,8 +1,9 @@
 body {
   margin: 0px;
-  background-image: url("./Components/Auth/green-bg.jpg");
-  background-size: cover;
+  /* background-image: url("./Components/Auth/green-bg.jpg"); */
+  /* background-size: cover; */
   box-sizing: border-box;
+  background: #f5f7fb;
 }
 
 /* side nav bar */
