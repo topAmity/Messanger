@@ -441,7 +441,6 @@ export const SearchUserComp = ({
   setSearch,
   onClickStartChat,
   avatarFileId,
-  userId,
 }) => {
   const dispatch = useDispatch();
   const storeUserData = useSelector((store) => store.user);
@@ -465,14 +464,14 @@ export const SearchUserComp = ({
   const handleSubmitForAcceChat = () => {
     // dispatch(accessChat(_id, token, recent_chat));
 
-    const ownUserId = storeUserData.userId.userId;
+    const userId = storeUserData.userId.userId;
     // setSearch(false);
-    console.log("userIdArr", [ownUserId, userId]);
+    console.log("userIdArr", [userId, _id, "iphone14"]);
     onClickStartChat && onClickStartChat(false);
     const liveChannel = ChannelRepository.createChannel({
       type: ChannelType.Conversation,
-      userIds: [ownUserId, userId],
-      displayName: `${ownUserId},${userId}`,
+      userIds: [userId, _id],
+      displayName: `${userId},${_id}`,
     });
     liveChannel.once("dataUpdated", (data) => {
       console.log("channel created", data);
