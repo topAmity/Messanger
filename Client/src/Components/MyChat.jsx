@@ -26,8 +26,8 @@ export const MyChat = ({ onClickStartChat }) => {
   const [recentChat, setRecentChat] = useState([]);
   const [recentFilterChat, setRecentFilterChat] = useState([]);
   const [searchFilterChat, setSearchFilterChat] = useState([]);
-  // console.log("recentFilterChat: ", recentFilterChat);
-  // console.log("recentChat: ", recentChat);
+  console.log("recentFilterChat: ", recentFilterChat);
+  console.log("recentChat: ", recentChat);
   const [channelList, setChannelList] = useState([]);
   const [role, setRole] = useState("");
   const [permittedRole, setPermittedRole] = useState([]);
@@ -416,6 +416,7 @@ export const SearchUserComp = ({
   setSearch,
   onClickStartChat,
   avatarFileId,
+  userId,
 }) => {
   const dispatch = useDispatch();
   const storeUserData = useSelector((store) => store.user);
@@ -439,14 +440,14 @@ export const SearchUserComp = ({
   const handleSubmitForAcceChat = () => {
     // dispatch(accessChat(_id, token, recent_chat));
 
-    const userId = storeUserData.userId.userId;
+    const ownUserId = storeUserData.userId.userId;
     // setSearch(false);
-    console.log("userIdArr", [userId, _id, "iphone14"]);
+    console.log("userIdArr", [ownUserId, userId]);
     onClickStartChat && onClickStartChat(false);
     const liveChannel = ChannelRepository.createChannel({
       type: ChannelType.Conversation,
-      userIds: [userId, _id],
-      displayName: `${userId},${_id}`,
+      userIds: [ownUserId, userId],
+      displayName: `${ownUserId},${userId}`,
     });
     liveChannel.once("dataUpdated", (data) => {
       console.log("channel created", data);
