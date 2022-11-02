@@ -82,7 +82,9 @@ export const MyChat = ({ onClickStartChat }) => {
     queryRecentChat();
   }, []);
   useEffect(() => {
-    createPermissionUser();
+    if (recentChat.length > 0) {
+      createPermissionUser();
+    }
   }, [recentChat]);
 
   async function createPermissionUser() {
