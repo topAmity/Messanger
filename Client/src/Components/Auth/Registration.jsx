@@ -22,6 +22,7 @@ export const RegisterComp = () => {
   const [userId] = useState(searchParams.get("userId"));
   const [displayName] = useState(searchParams.get("displayName"));
   const [email] = useState(searchParams.get("email"));
+  const [phoneNumber] = useState(searchParams.get("phoneNumber"));
   // console.log("apiKey", searchParams.get("apiKey"));
   // console.log("userId", searchParams.get("userId"));
   // console.log("displayName", searchParams.get("displayName"));
@@ -72,7 +73,7 @@ export const RegisterComp = () => {
       client.on("connectionStatusChanged", ({ newValue }) => {
         if (newValue === ConnectionStatus.Connected) {
           console.log("connected to asc " + amityUser.displayName);
-          registerUser(userId, displayName, email);
+          registerUser(userId, displayName, email, phoneNumber);
           setAmityUser({
             userId: userId,
             displayName: displayName || undefined,
@@ -126,12 +127,13 @@ export const RegisterComp = () => {
   const handleSubmit = () => {
     login();
   };
-  function registerUser(userId, displayName, email) {
+  function registerUser(userId, displayName, email, phoneNumber) {
     axios
       .post("https://power-school-demo.herokuapp.com/v1/users", {
         userId: userId,
         displayName: displayName,
         email: email,
+        phoneNumber: phoneNumber,
       })
       .then(function (response) {
         console.log(response);
