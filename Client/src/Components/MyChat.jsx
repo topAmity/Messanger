@@ -3,7 +3,7 @@ import SearchIcon from "@mui/icons-material/Search";
 import React, { useEffect, useRef, useState } from "react";
 import Popover from "@mui/material/Popover";
 import Typography from "@mui/material/Typography";
-import { Avatar, Badge } from "@mui/material";
+import { Avatar, Badge, Button, Input } from "@mui/material";
 import { useDispatch } from "react-redux";
 import { makeSearchApi } from "./Redux/Searching/action";
 import { useSelector } from "react-redux";
@@ -19,22 +19,33 @@ import {
 } from "@amityco/js-sdk";
 import axios from "axios";
 import styled from "@emotion/styled";
-import { UserRepository } from "@amityco/js-sdk";
+import { UserRepository, MessageRepository } from "@amityco/js-sdk";
 
 export const MyChat = ({ onClickStartChat }) => {
   const [search, setSearch] = useState(false);
   const [recentChat, setRecentChat] = useState([]);
   const [recentFilterChat, setRecentFilterChat] = useState([]);
   const [searchFilterChat, setSearchFilterChat] = useState([]);
-  console.log("recentFilterChat: ", recentFilterChat);
-  console.log("recentChat: ", recentChat);
+  const [inputValue, setInputValue] = useState("");
+  console.log("inputValue: ", inputValue);
+  // console.log("searchFilterChat: ", searchFilterChat);
+  const [selectedUser, setSelectedUser] = useState([]);
+  const [selectedChannel, setSelectedChannel] = useState([]);
+  console.log('selectedChannel: ', selectedChannel);
+  console.log("selectedUser: ", selectedUser);
+  // console.log("recentFilterChat: ", recentFilterChat);
+  // console.log("recentChat: ", recentChat);
   const [channelList, setChannelList] = useState([]);
   const [role, setRole] = useState("");
   const [permittedRole, setPermittedRole] = useState([]);
+  const handleChange = (event) => {
+    setInputValue(event.target.value);
+  };
   // console.log("role: ", role);
   const { search_result, loading, error } = useSelector(
     (store) => store.search
   );
+  console.log("search_result: ", search_result);
   const { recent_chat, loading: chat_loading } = useSelector(
     (store) => store.recentChat
   );
@@ -68,6 +79,7 @@ export const MyChat = ({ onClickStartChat }) => {
     };
   };
   function onClickSearch() {
+    console.log("onClickSearch: ");
     // queryAllUser(keyword);
 
     dispatch(makeSearchApi(keyword));
@@ -87,6 +99,32 @@ export const MyChat = ({ onClickStartChat }) => {
     }
   }, [recentChat]);
 
+  const addUser = (userId) => {
+
+    console.log("userId===>: ", userId);
+    const isContain = selectedUser.includes(userId);
+
+    if (userId && !isContain) {
+      console.log("isContain: ", isContain);
+      let userList = selectedUser;
+
+      userList.push(userId);
+
+      setSelectedUser(userList);
+
+    }
+  };
+  const addChannel = (channelId) => {
+    console.log('channelId=>: ', channelId);
+    const isContain = selectedChannel.includes(channelId);
+  if(channelId){
+    const newList =selectedChannel
+    newList.push(channelId)
+    setSelectedChannel(newList)
+ }
+ 
+    
+  };
   async function createPermissionUser() {
     const userIdArr = recentChat.map((item) => item._id);
     const userWithRole = await getUserRole(userIdArr);
@@ -238,9 +276,33 @@ export const MyChat = ({ onClickStartChat }) => {
       permittedRole.includes(item.roles[0])
     );
     console.log("userIdArrSearch: ", userIdArrSearch);
-    setSearchFilterChat(permittedUser);
+    setSearchFilterChat(search_result);
   }
 
+
+  async function sendChatMessage(channelId, text) {
+console.log('send=======')
+   await MessageRepository.createTextMessage({
+      channelId: channelId,
+      text: text,
+    });
+
+    // liveObject.on("dataUpdate", (message) => {
+    //   console.log("message is created", message);
+    // });
+  }
+  const broadCastMessage=async ()=>{
+    console.log('broadCastMessage: ', selectedChannel);
+    console.log('broadCastMessageValue: ', inputValue);
+   selectedChannel.forEach(async (channelId) => await sendChatMessage(channelId, inputValue));
+    // try {
+    //   const results = await Promise.all(promises);
+    //   console.log(results); // Process the results as needed
+    // } catch (error) {
+    //   console.error('An error occurred:', error);
+    // }
+   
+  }
   // console.log("search_result: ", search_result);
   return (
     <ChatWrap width={width} height={height}>
@@ -249,10 +311,11 @@ export const MyChat = ({ onClickStartChat }) => {
         <div className="notification">
           <h2>Chats </h2>
           <p>role: {role}</p>
+
           {/* <NotificationsIcon /> */}
-          <Badge badgeContent={notification} color="error">
+          {/* <Badge badgeContent={notification} color="error">
             <Notificationcomp />
-          </Badge>
+          </Badge> */}
           {/* <AddIcon /> */}
         </div>
         <div className="search-cont">
@@ -266,33 +329,37 @@ export const MyChat = ({ onClickStartChat }) => {
         </div>
       </div>
       <div className="recent-chat">
-        <p className="Recent">
-          {search ? `Search ${searchFilterChat.length} results` : "Recent"}
-        </p>
+        <p className="Recent">Search</p>
         <div className="recent-user">
-          {search
-            ? searchFilterChat.map((el) => (
-                <SearchUserComp
-                  onClickStartChat={onClickStartChat}
-                  key={el._id}
-                  {...el}
-                  token={token}
-                  recent_chat={recent_chat}
-                  setSearch={setSearch}
-                />
-              ))
-            : recentFilterChat.map((el, index) => (
-                <SearchUserComp
-                  onClickStartChat={onClickStartChat}
-                  key={el._id}
-                  {...el}
-                  token={token}
-                  recent_chat={recent_chat}
-                  setSearch={setSearch}
-                />
-              ))}
+          {search_result.map((el) => (
+            <div onClick={() => addUser(el.userId)}>
+              <SearchUserComp
+                setChannels={addChannel}
+                key={el._id}
+                {...el}
+                token={token}
+                recent_chat={recent_chat}
+                setSearch={setSearch}
+              />
+            </div>
+          ))}
         </div>
       </div>
+      <h4 className="select-user-text">Selected user</h4>
+      <p className="select-user-text">{selectedUser.join(",")}</p>
+      <div>
+        <h4 className="select-user-text">Broadcast Message</h4>
+
+        <div className="select-user-text">
+          <Input
+            value={inputValue}
+            onChange={handleChange}
+            placeholder="Enter something..."
+          />
+          <Button onClick={()=>broadCastMessage()} variant="contained">Broadcast</Button>
+        </div>
+      </div>
+
       {/* </div> */}
     </ChatWrap>
   );
@@ -419,12 +486,13 @@ export const SearchUserComp = ({
   onClickStartChat,
   avatarFileId,
   userId,
+  setChannels
 }) => {
   const dispatch = useDispatch();
   const storeUserData = useSelector((store) => store.user);
   const SELECT_CHAT = "SELECT_CHAT";
   const selectChat = (payload) => ({ type: SELECT_CHAT, payload });
-
+const [channelId, setChannelId] = useState('')
   function createChannel(channelId, user1, user2) {
     axios
       .post("https://power-school-demo.herokuapp.com/v1/channels", {
@@ -445,7 +513,7 @@ export const SearchUserComp = ({
     const ownUserId = storeUserData.userId.userId;
     // setSearch(false);
     console.log("userIdArr", [ownUserId, userId]);
-    onClickStartChat && onClickStartChat(false);
+  
     const liveChannel = ChannelRepository.createChannel({
       type: ChannelType.Conversation,
       userIds: [ownUserId, userId],
@@ -466,9 +534,16 @@ export const SearchUserComp = ({
           chatName: "Mock",
         })
       );
+      setChannelId(data.channelId)
       createChannel(data.channelId, ownUserId, userId);
     });
   };
+useEffect(() => {
+  if(channelId){
+    setChannels && setChannels(channelId)
+  }
+
+}, [channelId])
 
   return (
     <div onClick={handleSubmitForAcceChat} className="user">

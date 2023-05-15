@@ -28,8 +28,8 @@ async function queryAllUser(keyword) {
 }
 export const makeSearchApi = (search) => async (dispatch) => {
   searhcLoding(true);
-  const user = JSON.parse(localStorage.getItem("userInfo")) || {};
-  const url = `https://messenger-clo.herokuapp.com/auth?search=${search}`;
+
+
 
   try {
     const liveUserCollection = UserRepository.queryUsers({
@@ -47,14 +47,14 @@ export const makeSearchApi = (search) => async (dispatch) => {
     // });
     liveUserCollection.on("dataUpdated", (models) => {
       console.log("models: ", models);
-      const mappedModel = models.map((model) => {
-        return {
-          _id: model.userId,
-          name: model.displayName,
-        };
-      });
+      // const mappedModel = models.map((model) => {
+      //   return {
+      //     _id: model.userId,
+      //     name: model.displayName,
+      //   };
+      // });
 
-      dispatch(searchResult(mappedModel));
+      dispatch(searchResult(models));
     });
     // console.log("res: ", res);
     // let data = await res.json();

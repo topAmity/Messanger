@@ -18,7 +18,7 @@ export const HomeComp = () => {
   const { user, loading, error } = useSelector((store) => store.user);
   const amityUser = useSelector((store) => store.user);
   const { chatting } = useSelector((store) => store.chatting);
-  console.log("chatting: ", chatting);
+
   const navigate = useNavigate();
   const [isOpenChat, setIsOpenChat] = useState(false);
   console.log("isOpenChat: ", isOpenChat);
@@ -37,8 +37,8 @@ export const HomeComp = () => {
       <div className={isOpenChat ? "" : "display-none"}>
         <MyChat onClickStartChat={onClickAddChat} />
       </div>
-
-      <div className={!isOpenChat ? "" : "display-none"}>
+      <MyChat onClickStartChat={onClickAddChat} />
+      {/* <div className={!isOpenChat ? "" : "display-none"}>
         {chatting._id ? (
           <ChattingPage />
         ) : (
@@ -49,7 +49,7 @@ export const HomeComp = () => {
           // />
           <MyChat onClickStartChat={onClickAddChat} />
         )}
-      </div>
+      </div> */}
     </div>
   );
 };
