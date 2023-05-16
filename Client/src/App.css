@@ -318,6 +318,22 @@ svg {
   color: #212121;
   padding-left: 10px;
 }
-.message-input{
-
+.select-user-bubble{
+  background-color: #3356f3;
+  padding: 10px;
+  border-radius: 30px;
+  margin:5px;
+  width: 100px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-weight: 600;
+}
+.broadcast-btn{
+  margin-left: 20px;
+}
+.userGrid{
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  padding: 10;
 }

@@ -309,8 +309,8 @@ console.log('send=======')
       {/* <div className="mychat-cont"> */}
       <div>
         <div className="notification">
-          <h2>Chats </h2>
-          <p>role: {role}</p>
+          <h2>Broadcast page </h2>
+          {/* <p>role: {role}</p> */}
 
           {/* <NotificationsIcon /> */}
           {/* <Badge badgeContent={notification} color="error">
@@ -346,7 +346,9 @@ console.log('send=======')
         </div>
       </div>
       <h4 className="select-user-text">Selected user</h4>
-      <p className="select-user-text">{selectedUser.join(",")}</p>
+      <div className="userGrid">
+      {selectedUser.map(item=><div className="select-user-bubble">{item}</div>)}
+      </div>
       <div>
         <h4 className="select-user-text">Broadcast Message</h4>
 
@@ -356,7 +358,7 @@ console.log('send=======')
             onChange={handleChange}
             placeholder="Enter something..."
           />
-          <Button onClick={()=>broadCastMessage()} variant="contained">Broadcast</Button>
+          <Button style={{marginLeft:'10px'}} onClick={()=>broadCastMessage()} variant="contained">Broadcast</Button>
         </div>
       </div>
 
