@@ -3,7 +3,7 @@ import SearchIcon from "@mui/icons-material/Search";
 import React, { useEffect, useRef, useState } from "react";
 import Popover from "@mui/material/Popover";
 import Typography from "@mui/material/Typography";
-import { Avatar, Badge, Button, Input } from "@mui/material";
+import { Avatar, Badge, Button, Input, Modal } from "@mui/material";
 import { useDispatch } from "react-redux";
 import { makeSearchApi } from "./Redux/Searching/action";
 import { useSelector } from "react-redux";
@@ -31,7 +31,7 @@ export const MyChat = ({ onClickStartChat }) => {
   // console.log("searchFilterChat: ", searchFilterChat);
   const [selectedUser, setSelectedUser] = useState([]);
   const [selectedChannel, setSelectedChannel] = useState([]);
-  console.log('selectedChannel: ', selectedChannel);
+  console.log("selectedChannel: ", selectedChannel);
   console.log("selectedUser: ", selectedUser);
   // console.log("recentFilterChat: ", recentFilterChat);
   // console.log("recentChat: ", recentChat);
@@ -100,7 +100,6 @@ export const MyChat = ({ onClickStartChat }) => {
   }, [recentChat]);
 
   const addUser = (userId) => {
-
     console.log("userId===>: ", userId);
     const isContain = selectedUser.includes(userId);
 
@@ -111,19 +110,16 @@ export const MyChat = ({ onClickStartChat }) => {
       userList.push(userId);
 
       setSelectedUser(userList);
-
     }
   };
   const addChannel = (channelId) => {
-    console.log('channelId=>: ', channelId);
+    console.log("channelId=>: ", channelId);
     const isContain = selectedChannel.includes(channelId);
-  if(channelId){
-    const newList =selectedChannel
-    newList.push(channelId)
-    setSelectedChannel(newList)
- }
- 
-    
+    if (channelId) {
+      const newList = selectedChannel;
+      newList.push(channelId);
+      setSelectedChannel(newList);
+    }
   };
   async function createPermissionUser() {
     const userIdArr = recentChat.map((item) => item._id);
@@ -191,7 +187,7 @@ export const MyChat = ({ onClickStartChat }) => {
   }, [channelList]);
   const [width, setWidth] = useState(0);
   const [height, setHeight] = useState(0);
-
+  const [open, setOpen] = useState(false);
   function getWindowDimensions() {
     const { innerWidth: width, innerHeight: height } = window;
 
@@ -279,10 +275,9 @@ export const MyChat = ({ onClickStartChat }) => {
     setSearchFilterChat(search_result);
   }
 
-
   async function sendChatMessage(channelId, text) {
-console.log('send=======')
-   await MessageRepository.createTextMessage({
+    console.log("send=======");
+    await MessageRepository.createTextMessage({
       channelId: channelId,
       text: text,
     });
@@ -291,79 +286,122 @@ console.log('send=======')
     //   console.log("message is created", message);
     // });
   }
-  const broadCastMessage=async ()=>{
-    console.log('broadCastMessage: ', selectedChannel);
-    console.log('broadCastMessageValue: ', inputValue);
-   selectedChannel.forEach(async (channelId) => await sendChatMessage(channelId, inputValue));
+  const broadCastMessage = async () => {
+    console.log("broadCastMessage: ", selectedChannel);
+    console.log("broadCastMessageValue: ", inputValue);
+    selectedChannel.forEach(
+      async (channelId) => await sendChatMessage(channelId, inputValue)
+    );
+    if(inputValue && selectedChannel.length>0){
+      handleOpen()
+    }
     // try {
     //   const results = await Promise.all(promises);
     //   console.log(results); // Process the results as needed
     // } catch (error) {
     //   console.error('An error occurred:', error);
     // }
-   
-  }
+  };
+  const handleOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
+
   // console.log("search_result: ", search_result);
   return (
-    <ChatWrap width={width} height={height}>
-      {/* <div className="mychat-cont"> */}
-      <div>
-        <div className="notification">
-          <h2>Broadcast page </h2>
-          {/* <p>role: {role}</p> */}
+    <div>
+      <ChatWrap width={width} height={height}>
+        {/* <div className="mychat-cont"> */}
+        <div>
+          <div className="notification">
+            <h2>Broadcast page </h2>
+            {/* <p>role: {role}</p> */}
 
-          {/* <NotificationsIcon /> */}
-          {/* <Badge badgeContent={notification} color="error">
+            {/* <NotificationsIcon /> */}
+            {/* <Badge badgeContent={notification} color="error">
             <Notificationcomp />
           </Badge> */}
-          {/* <AddIcon /> */}
+            {/* <AddIcon /> */}
+          </div>
+          <div className="search-cont">
+            <SearchIcon onClick={onClickSearch} />
+            <input
+              onChange={handleQuery()}
+              type="text"
+              placeholder="Search users"
+              onKeyDown={handleKeyDown}
+            />
+          </div>
         </div>
-        <div className="search-cont">
-          <SearchIcon onClick={onClickSearch} />
-          <input
-            onChange={handleQuery()}
-            type="text"
-            placeholder="Search users"
-            onKeyDown={handleKeyDown}
-          />
+        <div className="recent-chat">
+          <p className="Recent">Search</p>
+          <div className="recent-user">
+            {search_result.map((el) => (
+              <div onClick={() => addUser(el.userId)}>
+                <SearchUserComp
+                  setChannels={addChannel}
+                  key={el._id}
+                  {...el}
+                  token={token}
+                  recent_chat={recent_chat}
+                  setSearch={setSearch}
+                />
+              </div>
+            ))}
+          </div>
         </div>
-      </div>
-      <div className="recent-chat">
-        <p className="Recent">Search</p>
-        <div className="recent-user">
-          {search_result.map((el) => (
-            <div onClick={() => addUser(el.userId)}>
-              <SearchUserComp
-                setChannels={addChannel}
-                key={el._id}
-                {...el}
-                token={token}
-                recent_chat={recent_chat}
-                setSearch={setSearch}
-              />
-            </div>
+        <h4 className="select-user-text">Selected user</h4>
+        <div className="userGrid">
+          {selectedUser.map((item) => (
+            <div className="select-user-bubble">{item}</div>
           ))}
         </div>
-      </div>
-      <h4 className="select-user-text">Selected user</h4>
-      <div className="userGrid">
-      {selectedUser.map(item=><div className="select-user-bubble">{item}</div>)}
-      </div>
-      <div>
-        <h4 className="select-user-text">Broadcast Message</h4>
+        <div>
+          <h4 className="select-user-text">Broadcast Message</h4>
 
-        <div className="select-user-text">
-          <Input
-            value={inputValue}
-            onChange={handleChange}
-            placeholder="Enter something..."
-          />
-          <Button style={{marginLeft:'10px'}} onClick={()=>broadCastMessage()} variant="contained">Broadcast</Button>
+          <div className="select-user-text">
+            <Input
+              value={inputValue}
+              onChange={handleChange}
+              placeholder="Enter something..."
+            />
+            <Button
+              style={{ marginLeft: "10px" }}
+              onClick={() => broadCastMessage()}
+              variant="contained"
+            >
+              Broadcast
+            </Button>
+          </div>
         </div>
-      </div>
 
-      {/* </div> */}
-    </ChatWrap>
+        {/* <Modal
+  // aria-labelledby="modal-modal-title"
+  // aria-describedby="modal-modal-description"
+>
+  <Box sx={style}>
+    <Typography id="modal-modal-title" variant="h6" component="h2">
+      Text in a modal
+    </Typography>
+  </Box>
+</Modal> */}
+        {/* </div> */}
+      </ChatWrap>
+      <Modal open={open} onClose={handleClose}>
+        <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', bgcolor: 'white', padding:30 ,background:'#ffffff', borderRadius:'20px'}}>
+          <Typography variant="h6" component="h2" align="center">
+            Broadcast Success!
+          </Typography>
+
+          <Button  onClick={handleClose} fullWidth>
+            Close
+          </Button>
+        </div>
+      </Modal>
+    </div>
   );
 };
 
@@ -488,13 +526,13 @@ export const SearchUserComp = ({
   onClickStartChat,
   avatarFileId,
   userId,
-  setChannels
+  setChannels,
 }) => {
   const dispatch = useDispatch();
   const storeUserData = useSelector((store) => store.user);
   const SELECT_CHAT = "SELECT_CHAT";
   const selectChat = (payload) => ({ type: SELECT_CHAT, payload });
-const [channelId, setChannelId] = useState('')
+  const [channelId, setChannelId] = useState("");
   function createChannel(channelId, user1, user2) {
     axios
       .post("https://power-school-demo.herokuapp.com/v1/channels", {
@@ -515,7 +553,7 @@ const [channelId, setChannelId] = useState('')
     const ownUserId = storeUserData.userId.userId;
     // setSearch(false);
     console.log("userIdArr", [ownUserId, userId]);
-  
+
     const liveChannel = ChannelRepository.createChannel({
       type: ChannelType.Conversation,
       userIds: [ownUserId, userId],
@@ -536,16 +574,15 @@ const [channelId, setChannelId] = useState('')
           chatName: "Mock",
         })
       );
-      setChannelId(data.channelId)
+      setChannelId(data.channelId);
       createChannel(data.channelId, ownUserId, userId);
     });
   };
-useEffect(() => {
-  if(channelId){
-    setChannels && setChannels(channelId)
-  }
-
-}, [channelId])
+  useEffect(() => {
+    if (channelId) {
+      setChannels && setChannels(channelId);
+    }
+  }, [channelId]);
 
   return (
     <div onClick={handleSubmitForAcceChat} className="user">
@@ -570,7 +607,7 @@ const ChatWrap = styled.div`
 
   height: 100%;
 
-  background-color: #f5f7fb;
+  background-color: #ffffff;
   /* Adapt the colors based on primary prop */
   @media only screen and (max-width: 600px) {
     width: ${(props) => `${props.width}px`};
