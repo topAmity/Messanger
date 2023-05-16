@@ -371,9 +371,11 @@ export const MyChat = ({ onClickStartChat }) => {
           </div>
         </div>
         <div className="recent-chat">
+          <h3 className="select-user-text">
           {search
-            ? `Search ${searchFilterChat.length} results`
-            : "Recent Broadcast Channel"}
+            ? `Search User ${searchFilterChat.length} results`
+            : " GroupChat List"}
+            </h3>
           <div className="recent-user">
             {/* {search_result.map((el) => (
               <div onClick={() => addUser(el.userId)}>
@@ -690,9 +692,8 @@ if(userId){
 };
 const ChatWrap = styled.div`
   color: #ffffff;
-
+  overflow-x: hidden;
   height: 100%;
-
   background-color: #ffffff;
   /* Adapt the colors based on primary prop */
   @media only screen and (max-width: 600px) {
