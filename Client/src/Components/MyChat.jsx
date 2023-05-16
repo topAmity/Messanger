@@ -25,17 +25,21 @@ export const MyChat = ({ onClickStartChat }) => {
   const [search, setSearch] = useState(false);
   const [recentChat, setRecentChat] = useState([]);
   const [recentFilterChat, setRecentFilterChat] = useState([]);
+  console.log("recentFilterChat: ", recentFilterChat);
   const [searchFilterChat, setSearchFilterChat] = useState([]);
   const [inputValue, setInputValue] = useState("");
   console.log("inputValue: ", inputValue);
   // console.log("searchFilterChat: ", searchFilterChat);
   const [selectedUser, setSelectedUser] = useState([]);
   const [selectedChannel, setSelectedChannel] = useState([]);
+  const [selectedGroupName, setSelectedGroupName] = useState([]);
+  console.log('selectedGroupName: ', selectedGroupName);
   console.log("selectedChannel: ", selectedChannel);
   console.log("selectedUser: ", selectedUser);
   // console.log("recentFilterChat: ", recentFilterChat);
   // console.log("recentChat: ", recentChat);
   const [channelList, setChannelList] = useState([]);
+  console.log('channelList: ', channelList);
   const [role, setRole] = useState("");
   const [permittedRole, setPermittedRole] = useState([]);
   const handleChange = (event) => {
@@ -137,13 +141,14 @@ export const MyChat = ({ onClickStartChat }) => {
     let channels;
 
     const liveCollection = ChannelRepository.queryChannels({
-      types: [ChannelType.Conversation],
+      types: [ChannelType.Community],
       filter: ChannelFilter.Member,
       isDeleted: false,
       sortBy: ChannelSortingMethod.LastCreated,
     });
 
     liveCollection.on("dataUpdated", (models) => {
+      console.log("models chat: ", models);
       channels = models;
 
       setChannelList(models);
@@ -157,6 +162,7 @@ export const MyChat = ({ onClickStartChat }) => {
       let members;
       const liveCollection = ChannelRepository.queryMembers({
         channelId: model.channelId,
+
         memberships: [MemberFilter.Member],
       });
 
@@ -277,28 +283,45 @@ export const MyChat = ({ onClickStartChat }) => {
 
   async function sendChatMessage(channelId, text) {
     console.log("send=======");
-    await MessageRepository.createTextMessage({
-      channelId: channelId,
-      text: text,
-    });
+    setTimeout(async () => {
+      await MessageRepository.createTextMessage({
+        channelId: channelId,
+        text: text,
+      });
+    }, 300);
+  
+
 
     // liveObject.on("dataUpdate", (message) => {
     //   console.log("message is created", message);
     // });
   }
+  const addGroupChat = (chatName, channelId) => {
+
+     const channelIdList = selectedChannel
+     channelIdList.push(channelId)
+     const channelNameList = [...selectedGroupName]
+     channelNameList.push(chatName)
+     setSelectedChannel(channelIdList)
+     setSelectedGroupName(channelNameList)
+     console.log('selectedChannel555: ', selectedChannel);
+     console.log('selectedGroupName: ', selectedGroupName);
+    // addChannel(channelId);
+  };
   const broadCastMessage = async () => {
     console.log("broadCastMessage: ", selectedChannel);
     console.log("broadCastMessageValue: ", inputValue);
     selectedChannel.forEach(
       async (channelId) => await sendChatMessage(channelId, inputValue)
     );
-    if(inputValue && selectedChannel.length>0){
+    if (inputValue && selectedChannel.length > 0) {
       setTimeout(() => {
-        handleOpen()
-        setInputValue('')
-        setSelectedChannel([])
+        handleOpen();
+        setInputValue("");
+        setSelectedChannel([]);
+        setSelectedGroupName([]);
+        setSelectedUser([])
       }, 500);
-    
     }
     // try {
     //   const results = await Promise.all(promises);
@@ -307,6 +330,12 @@ export const MyChat = ({ onClickStartChat }) => {
     //   console.error('An error occurred:', error);
     // }
   };
+  const clearAll=()=>{
+    setInputValue("");
+    setSelectedChannel([]);
+    setSelectedGroupName([]);
+    setSelectedUser([])
+  }
   const handleOpen = () => {
     setOpen(true);
   };
@@ -342,9 +371,11 @@ export const MyChat = ({ onClickStartChat }) => {
           </div>
         </div>
         <div className="recent-chat">
-          <p className="Recent">Search</p>
+          {search
+            ? `Search ${searchFilterChat.length} results`
+            : "Recent Broadcast Channel"}
           <div className="recent-user">
-            {search_result.map((el) => (
+            {/* {search_result.map((el) => (
               <div onClick={() => addUser(el.userId)}>
                 <SearchUserComp
                   setChannels={addChannel}
@@ -355,12 +386,43 @@ export const MyChat = ({ onClickStartChat }) => {
                   setSearch={setSearch}
                 />
               </div>
-            ))}
+            ))} */}
+            {search
+              ? search_result.map((el) => (
+                  <div onClick={() => addUser(el.userId)}>
+                    <SearchUserComp
+                      setChannels={addChannel}
+                      key={el._id}
+                      {...el}
+                      token={token}
+                      recent_chat={recent_chat}
+                      setSearch={setSearch}
+                    />
+                  </div>
+                ))
+              : channelList.map((el, index) => (
+                  <div onClick={()=>addGroupChat(el.displayName,el.channelId)}>
+                    <SearchUserComp
+                      // onClickStartChat={addChannel}
+                      key={el._id}
+                      {...el}
+                      token={token}
+                      recent_chat={recent_chat}
+                      setSearch={setSearch}
+                    />
+                  </div>
+                ))}
           </div>
         </div>
         <h4 className="select-user-text">Selected user</h4>
         <div className="userGrid">
           {selectedUser.map((item) => (
+            <div className="select-user-bubble">{item}</div>
+          ))}
+        </div>
+        <h4 className="select-user-text">Selected Group Chat</h4>
+        <div className="userGrid">
+          {selectedGroupName.map((item) => (
             <div className="select-user-bubble">{item}</div>
           ))}
         </div>
@@ -380,6 +442,13 @@ export const MyChat = ({ onClickStartChat }) => {
             >
               Broadcast
             </Button>
+            <Button
+              style={{ marginLeft: "10px" }}
+              onClick={() => clearAll()}
+           
+            >
+              Clear
+            </Button>
           </div>
         </div>
 
@@ -396,12 +465,23 @@ export const MyChat = ({ onClickStartChat }) => {
         {/* </div> */}
       </ChatWrap>
       <Modal open={open} onClose={handleClose}>
-        <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', bgcolor: 'white', padding:30 ,background:'#ffffff', borderRadius:'20px'}}>
+        <div
+          style={{
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
+            bgcolor: "white",
+            padding: 30,
+            background: "#ffffff",
+            borderRadius: "20px",
+          }}
+        >
           <Typography variant="h6" component="h2" align="center">
             Broadcast Success!
           </Typography>
 
-          <Button  onClick={handleClose} fullWidth>
+          <Button onClick={handleClose} fullWidth>
             Close
           </Button>
         </div>
@@ -557,31 +637,32 @@ export const SearchUserComp = ({
 
     const ownUserId = storeUserData.userId.userId;
     // setSearch(false);
-    console.log("userIdArr", [ownUserId, userId]);
+if(userId){
+  const liveChannel = ChannelRepository.createChannel({
+    type: ChannelType.Conversation,
+    userIds: [ownUserId, userId],
+    displayName: `${ownUserId},${userId}`,
+  });
+  liveChannel.once("dataUpdated", (data) => {
+    console.log("channel created", data);
+    dispatch(
+      selectChat({
+        isGroupChat: false,
+        index: 0,
+        user: {
+          pic: pic,
+          name: displayName,
+          userId: _id,
+        },
+        _id: data.channelId,
+        chatName: "Mock",
+      })
+    );
+    setChannelId(data.channelId);
+    createChannel(data.channelId, ownUserId, userId);
+  });
+}
 
-    const liveChannel = ChannelRepository.createChannel({
-      type: ChannelType.Conversation,
-      userIds: [ownUserId, userId],
-      displayName: `${ownUserId},${userId}`,
-    });
-    liveChannel.once("dataUpdated", (data) => {
-      console.log("channel created", data);
-      dispatch(
-        selectChat({
-          isGroupChat: false,
-          index: 0,
-          user: {
-            pic: pic,
-            name: displayName,
-            userId: _id,
-          },
-          _id: data.channelId,
-          chatName: "Mock",
-        })
-      );
-      setChannelId(data.channelId);
-      createChannel(data.channelId, ownUserId, userId);
-    });
   };
   useEffect(() => {
     if (channelId) {

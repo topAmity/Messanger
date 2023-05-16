@@ -320,7 +320,7 @@ svg {
 }
 .select-user-bubble{
   background-color: #3356f3;
-  padding: 10px;
+  padding:3px 8px;
   border-radius: 30px;
   margin:5px;
   width: 100px;
@@ -336,4 +336,5 @@ svg {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
   padding: 10;
+  min-height: 40px;
 }
