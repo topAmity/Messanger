@@ -293,7 +293,12 @@ export const MyChat = ({ onClickStartChat }) => {
       async (channelId) => await sendChatMessage(channelId, inputValue)
     );
     if(inputValue && selectedChannel.length>0){
-      handleOpen()
+      setTimeout(() => {
+        handleOpen()
+        setInputValue('')
+        setSelectedChannel([])
+      }, 500);
+    
     }
     // try {
     //   const results = await Promise.all(promises);
