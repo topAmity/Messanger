@@ -17,30 +17,32 @@ import AddChatIcon from "./AddChat.png";
 export const HomeComp = () => {
   const { user, loading, error } = useSelector((store) => store.user);
   const amityUser = useSelector((store) => store.user);
+  console.log("amityUser: ", user);
   const { chatting } = useSelector((store) => store.chatting);
   console.log("chatting: ", chatting);
   const navigate = useNavigate();
   const [isOpenChat, setIsOpenChat] = useState(false);
   console.log("isOpenChat: ", isOpenChat);
-  useEffect(() => {
-    if (amityUser?.userId.userId.length == 0) {
-      navigate("/register");
-    }
-  }, [amityUser]);
+  // useEffect(() => {
+  //   if (amityUser?.userId.userId.length == 0) {
+  //     navigate("/register");
+  //   }
+  // }, [amityUser]);
 
   function onClickAddChat(value) {
+    console.log("value: ", value);
     setIsOpenChat(value);
   }
   return (
     <div className="home-cont">
-      <SideNavbar />
+      {/* <SideNavbar /> */}
       <div className={isOpenChat ? "" : "display-none"}>
         <MyChat onClickStartChat={onClickAddChat} />
       </div>
 
       <div className={!isOpenChat ? "" : "display-none"}>
         {chatting._id ? (
-          <ChattingPage />
+          <ChattingPage onClickStartChat={onClickAddChat} />
         ) : (
           // <MessageStarter
           //   pic={user.pic}

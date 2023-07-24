@@ -41,9 +41,6 @@ body {
   font-size: 1.7rem;
 }
 
-.home-cont {
-  /* display: flex; */
-}
 .mychat-cont {
   color: #ffffff;
   width: 26%;
@@ -200,8 +197,9 @@ p {
   /* border: 2px solid red; */
   width: 100%;
   /* padding: 10px; */
-  max-height: 75%;
-  height: 75%;
+  max-height: 77%;
+  max-height: 760px;
+  height: 63%;
   box-sizing: border-box;
   /* overflow-y: hidden; */
   overflow: auto;
@@ -219,6 +217,9 @@ p {
   display: flex;
   border-top: 1px solid #f0eff5;
   align-items: center;
+  padding-top: 15px;
+  position: relative;
+  padding-left: 10px;
   justify-content: center;
   margin-left: 10px;
 }
@@ -259,8 +260,7 @@ p {
   display: flex;
   align-items: center;
   /* gap: 10px; */
-  /* margin: 5px; */
-}
+  margin: 5px;
 .left-msg {
   background-color: #27b48c;
   padding: 8px;
@@ -310,4 +310,54 @@ p {
 }
 svg {
   cursor: pointer;
+}
+
+.floating-chatbtn {
+  outline-color: transparent;
+  position: fixed;
+  bottom: 18pt;
+  right: 18pt;
+  z-index: 9999999;
+  border-radius: 45pt;
+  border: none;
+  padding: 0;
+  width: 45pt;
+  height: 45pt;
+  background-color: rgb(255, 156, 35);
+  box-shadow: rgba(0, 0, 0, 0.3) 0px 1px 4px, rgba(0, 0, 0, 0.2) 0px 2px 32px;
+  z-index: 1001;
+  visibility: visible;
+  transform: rotate(0deg);
+  display: block;
+  cursor: pointer;
+}
+
+.floating-chat-icon {
+  border-radius: 45pt;
+  padding: 10px;
+  max-width: 45pt;
+  max-height: 45pt;
+  display: inline;
+}
+
+.floating-chatframe {
+  position: fixed;
+  right: 18pt;
+  z-index: 10000000;
+  width: 440px;
+  min-height: 250px !important;
+  max-height: 1000px !important;
+  /* height: 900px; */
+  height: 80vh;
+  border-radius: 15px;
+  box-shadow: rgb(0 0 0 / 15%) 0 3pt 12pt;
+  /* display: none; */
+  max-width: 88vw;
+  overflow: hidden;
+  background: #fff;
+  display: block;
+  bottom: 100px;
+}
+.emoji-mart {
+  margin-left: 0px;
 }

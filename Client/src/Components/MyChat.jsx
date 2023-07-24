@@ -19,6 +19,8 @@ import {
 } from "@amityco/js-sdk";
 import axios from "axios";
 import styled from "@emotion/styled";
+import { MdOutlineArrowBackIos } from "react-icons/md";
+import { height } from "@mui/system";
 import { UserRepository } from "@amityco/js-sdk";
 
 export const MyChat = ({ onClickStartChat }) => {
@@ -240,6 +242,10 @@ export const MyChat = ({ onClickStartChat }) => {
     console.log("userIdArrSearch: ", userIdArrSearch);
     setSearchFilterChat(permittedUser);
   }
+  
+  function goBack() {
+    onClickStartChat && onClickStartChat(false);
+  }
 
   // console.log("search_result: ", search_result);
   return (
@@ -247,7 +253,13 @@ export const MyChat = ({ onClickStartChat }) => {
       {/* <div className="mychat-cont"> */}
       <div>
         <div className="notification">
-          <h2>Chats </h2>
+          {/* <MdOutlineArrowBackIos
+            style={{ cursor: "pointer" }}
+            onClick={() => goBack()}
+            on
+            color="black"
+          /> */}
+          <h2>Chats</h2>
           <p>role: {role}</p>
           {/* <NotificationsIcon /> */}
           <Badge badgeContent={notification} color="error">
@@ -444,6 +456,8 @@ export const SearchUserComp = ({
 
     const ownUserId = storeUserData.userId.userId;
     // setSearch(false);
+    console.log("userIdArr", [userId, _id, "iphone14"]);
+
     console.log("userIdArr", [ownUserId, userId]);
     onClickStartChat && onClickStartChat(false);
     const liveChannel = ChannelRepository.createChannel({
@@ -466,7 +480,8 @@ export const SearchUserComp = ({
           chatName: "Mock",
         })
       );
-      createChannel(data.channelId, ownUserId, userId);
+      createChannel(data.channelId, userId, _id);
+      onClickStartChat && onClickStartChat(false);
     });
   };
 
@@ -495,8 +510,8 @@ const ChatWrap = styled.div`
 
   background-color: #f5f7fb;
   /* Adapt the colors based on primary prop */
-  @media only screen and (max-width: 600px) {
+  /* @media only screen and (max-width: 480px) {
     width: ${(props) => `${props.width}px`};
   */
-  }
+  } */
 `;

@@ -48,10 +48,6 @@ export const ChattingPage = ({ onClickStartChat }) => {
   const scrolldiv = createRef();
   const dispatch = useDispatch();
 
-  // useEffect(() => {
-  //   scrollToBottom();
-  // }, [messages]);
-
   function queryChatMessage() {
     const liveCollection = MessageRepository.queryMessages({ channelId: _id });
     let messages = liveCollection.models;
@@ -98,6 +94,7 @@ export const ChattingPage = ({ onClickStartChat }) => {
   const [width, setWidth] = useState(0);
   const [height, setHeight] = useState(0);
   console.log("width: ", width);
+
   function getWindowDimensions() {
     const { innerWidth: width, innerHeight: height } = window;
     console.log("width: ", width);
