@@ -43,6 +43,8 @@ export const ChattingPage = ({ onClickStartChat }) => {
       _id,
     },
   } = useSelector((store) => store.chatting);
+  const userStore = useSelector((store) => store.user);
+  console.log("userStore: ", userStore);
   const scrolldiv = createRef();
   const dispatch = useDispatch();
 
@@ -141,21 +143,35 @@ export const ChattingPage = ({ onClickStartChat }) => {
         </div>
       </div>
       <div ref={messagesEndRef} id="chat-scroll" className="live-chat">
+        {console.log("chatMessage: ", chatMessage)}
         {chatMessage.map((el, index) => (
           <div
             key={index}
             className={
-              el.sender._id == el._id ? "rihgtuser-chat" : "leftuser-chat"
+              el._id !== userStore["userId"]["userId"]
+                ? "rihgtuser-chat"
+                : "leftuser-chat"
             }
           >
-            <div className={el.sender._id == el._id ? "right-avt" : "left-avt"}>
+            <div
+              className={
+                el._id !== userStore["userId"]["userId"]
+                  ? "right-avt"
+                  : "left-avt"
+              }
+            >
               <p className="time chat-time">
                 {new Date(el.createdAt).getHours() +
                   ":" +
                   (new Date(el.createdAt).getMinutes() < 10 ? "0" : "") +
                   new Date(el.createdAt).getMinutes()}
               </p>
-              <div className={ChatlogicStyling(el.sender._id, el._id)}>
+              <div
+                className={ChatlogicStyling(
+                  el._id,
+                  userStore["userId"]["userId"]
+                )}
+              >
                 <p>{el.content}</p>
               </div>
 
@@ -184,11 +200,13 @@ export const ChattingPage = ({ onClickStartChat }) => {
 };
 const ColorButton = styled(Button)(() => ({
   color: "white",
-  fontSize: "20px",
+  fontSize: "16px",
   textTransform: "none",
   padding: "12px",
-  marginRight: "15px",
+  marginRight: "5px",
+
   backgroundColor: "#27b48c",
+  // paddingLeft: "10px",
   "&:hover": {
     backgroundColor: "#0f8e6a",
   },
@@ -238,12 +256,22 @@ function InputContWithEmog({ id, token, socket, onSendChat }) {
           onEnter={handleOnEnter}
           placeholder="Type a message"
         />
+
+        {/* <ColorButton
+          style={{ position: "absolute" }}
+          onClick={handleChatClick}
+          variant="contained"
+          endIcon={<SendIcon />}
+        ></ColorButton> */}
       </div>
+
       <ColorButton
         onClick={handleChatClick}
-        variant="contained"
-        endIcon={<SendIcon />}
-      ></ColorButton>
+        // variant="contained"
+        // endIcon={<SendIcon />}
+      >
+        <SendIcon />
+      </ColorButton>
     </>
   );
 }
@@ -252,7 +280,7 @@ const ChatWrap = styled.div`
   box-shadow: 0 2px 4px rgb(15 34 58 / 12%);
   height: 100vh;
   /* Adapt the colors based on primary prop */
-  @media only screen and (max-width: 480px) {
+  @media only screen and (max-width: 600px) {
     width: ${(props) => `${props.width}px`};
   */
   }

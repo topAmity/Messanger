@@ -49,7 +49,6 @@ export const HomeComp = () => {
           //   name={amityUser.userId && amityUser.userId.displayName}
           //   onClickAddChat={onClickAddChat}
           // />
-
           <MyChat onClickStartChat={onClickAddChat} />
         )}
       </div>

@@ -7,7 +7,12 @@ import Button from "@mui/material/Button";
 import CircularProgress from "@mui/material/CircularProgress";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import AmityClient, { ConnectionStatus, ApiEndpoint } from "@amityco/js-sdk";
+import AmityClient, {
+  ConnectionStatus,
+  ApiEndpoint,
+  AmityUserTokenManager,
+  ApiRegion,
+} from "@amityco/js-sdk";
 import axios from "axios";
 import { useSearchParams } from "react-router-dom";
 import ReactLoading from "react-loading";
@@ -18,6 +23,7 @@ export const RegisterComp = () => {
   const [userId] = useState(searchParams.get("userId"));
   const [displayName] = useState(searchParams.get("displayName"));
   const [email] = useState(searchParams.get("email"));
+  const [phoneNumber] = useState(searchParams.get("phoneNumber"));
   // console.log("apiKey", searchParams.get("apiKey"));
   // console.log("userId", searchParams.get("userId"));
   // console.log("displayName", searchParams.get("displayName"));
@@ -46,11 +52,20 @@ export const RegisterComp = () => {
     }
   }, []);
 
-  function autoLogin() {
+  async function autoLogin() {
     const client = new AmityClient({
       apiKey: apiKey,
       apiEndpoint: ApiEndpoint.SG,
     });
+    const { accessToken, err } = await AmityUserTokenManager.createAuthToken(
+      apiKey,
+      ApiRegion.SG,
+      {
+        userId: userId,
+        displayName: displayName,
+      }
+    );
+
     if (userId.length > 0) {
       client.registerSession({
         userId: userId,
@@ -59,11 +74,12 @@ export const RegisterComp = () => {
       client.on("connectionStatusChanged", ({ newValue }) => {
         if (newValue === ConnectionStatus.Connected) {
           console.log("connected to asc " + amityUser.displayName);
-          registerUser(userId, displayName, email);
+          registerUser(userId, displayName, email, phoneNumber);
           setAmityUser({
             userId: userId,
             displayName: displayName || undefined,
             email: email || undefined,
+            token: accessToken,
           });
           setOnConnected(true);
           // navigate("/");
@@ -86,6 +102,7 @@ export const RegisterComp = () => {
         displayName: amityUser.displayName,
       }); // Add your own userId and displayName
       client.on("connectionStatusChanged", ({ newValue }) => {
+        console.log("newValue: ", newValue);
         if (newValue === ConnectionStatus.Connected) {
           console.log("connected to asc " + amityUser.displayName);
           registerUser(
@@ -111,12 +128,13 @@ export const RegisterComp = () => {
   const handleSubmit = () => {
     login();
   };
-  function registerUser(userId, displayName, email) {
+  function registerUser(userId, displayName, email, phoneNumber) {
     axios
       .post("https://power-school-demo.herokuapp.com/v1/users", {
         userId: userId,
         displayName: displayName,
         email: email,
+        phoneNumber: phoneNumber,
       })
       .then(function (response) {
         console.log(response);

@@ -14,3 +14,10 @@
 .display-none {
   display: none;
 }
+.emoji-mart {
+  margin-left: 55px;
+
+  padding: 6px;
+  position: fixed;
+  z-index: -1;
+}

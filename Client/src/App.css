@@ -1,8 +1,9 @@
 body {
   margin: 0px;
-  background-image: url("./Components/Auth/green-bg.jpg");
-  background-size: cover;
+  /* background-image: url("./Components/Auth/green-bg.jpg"); */
+  /* background-size: cover; */
   box-sizing: border-box;
+  background: #f5f7fb;
 }
 
 /* side nav bar */
@@ -40,9 +41,6 @@ body {
   font-size: 1.7rem;
 }
 
-/* .home-cont {
-
-} */
 .mychat-cont {
   color: #ffffff;
   width: 26%;
@@ -50,7 +48,7 @@ body {
 
   background-color: #f5f7fb;
 }
-@media only screen and (max-width: 480px) {
+@media only screen and (max-width: 600px) {
   .mychat-cont {
     width: 100%;
   }
@@ -61,7 +59,7 @@ body {
   justify-content: center;
   background-color: #e6ebf5;
   padding: 5px;
-  width: 87%;
+  width: 100%;
   margin: auto;
   border-radius: 5px;
   margin-top: 10px;
@@ -88,6 +86,9 @@ body {
   color: #495057;
   font-family: "Public Sans", sans-serif;
   font-weight: 600;
+}
+p {
+  color: #212121;
 }
 .recent-chat {
   width: 100%;
@@ -194,7 +195,7 @@ body {
 }
 .live-chat {
   /* border: 2px solid red; */
-
+  width: 100%;
   /* padding: 10px; */
   max-height: 77%;
   max-height: 760px;
@@ -219,6 +220,8 @@ body {
   padding-top: 15px;
   position: relative;
   padding-left: 10px;
+  justify-content: center;
+  margin-left: 10px;
 }
 .react-input-emoji--container {
   border-radius: 0px !important;
@@ -258,7 +261,6 @@ body {
   align-items: center;
   /* gap: 10px; */
   margin: 5px;
-}
 .left-msg {
   background-color: #27b48c;
   padding: 8px;
